@@ -8,7 +8,7 @@ Clone and run the "redditapp.xcworkspace" file.
 Make sure "Cool Reddit" is selected as the Scheme when you build and run the app.
 
 ## Todo
-Create a NSString category to find heights for UILabel positioning.
+1. Create a NSString category to find heights for UILabel positioning.
 
 ## Screenshots
 
