@@ -10,6 +10,7 @@ Make sure "Cool Reddit" is selected as the Scheme when you build and run the app
 ## Todo
 1. Create a category (NSString) to find heights for UILabel positioning.
 1. Create a better URL parser.
+1. Add an about/thanks view.
 
 ## Screenshots
 
