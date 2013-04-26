@@ -5,7 +5,7 @@ An iOS App to browse Reddit.com
 
 Clone and run the "redditapp.xcworkspace" file.
 
-Make sure "Cool Reddit" is selected as the Scheme when you build and run.
+Make sure "Cool Reddit" is selected as the Scheme when you build and run the app.
 
 ## Screenshots
 
