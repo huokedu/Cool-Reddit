@@ -1,0 +1,489 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2438BBE316F103DA00AA6625 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2438BBE216F103DA00AA6625 /* UIKit.framework */; };
+		2438BBE516F103DA00AA6625 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2438BBE416F103DA00AA6625 /* Foundation.framework */; };
+		2438BBE716F103DA00AA6625 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2438BBE616F103DA00AA6625 /* CoreGraphics.framework */; };
+		2438BBED16F103DA00AA6625 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2438BBEB16F103DA00AA6625 /* InfoPlist.strings */; };
+		2438BBEF16F103DA00AA6625 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2438BBEE16F103DA00AA6625 /* main.m */; };
+		2438BBF316F103DA00AA6625 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2438BBF216F103DA00AA6625 /* AppDelegate.m */; };
+		2438BBF516F103DA00AA6625 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 2438BBF416F103DA00AA6625 /* Default.png */; };
+		2438BBF716F103DA00AA6625 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2438BBF616F103DA00AA6625 /* Default@2x.png */; };
+		2438BBF916F103DA00AA6625 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2438BBF816F103DA00AA6625 /* Default-568h@2x.png */; };
+		2438BC0016F103F400AA6625 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2438BBFF16F103F400AA6625 /* MobileCoreServices.framework */; };
+		247CDEE9171F2A600046A593 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDEE7171F2A5F0046A593 /* Icon-72.png */; };
+		247CDEEA171F2A600046A593 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDEE8171F2A5F0046A593 /* Icon-72@2x.png */; };
+		247CDF931729F7FB0046A593 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDF911729F7FB0046A593 /* Icon.png */; };
+		247CDF941729F7FB0046A593 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDF921729F7FB0046A593 /* Icon@2x.png */; };
+		247CDF9E172A34830046A593 /* CommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDF97172A34830046A593 /* CommentViewController.m */; };
+		247CDF9F172A34830046A593 /* MyRedditsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDF99172A34830046A593 /* MyRedditsViewController.m */; };
+		247CDFA0172A34830046A593 /* RedditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDF9B172A34830046A593 /* RedditViewController.m */; };
+		247CDFA1172A34830046A593 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDF9D172A34830046A593 /* WebViewController.m */; };
+		247CDFAA172A34FC0046A593 /* ActivityDisplay.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDFA3172A34FC0046A593 /* ActivityDisplay.m */; };
+		247CDFAB172A34FC0046A593 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDFA5172A34FC0046A593 /* NSString+HTML.m */; };
+		247CDFAC172A34FC0046A593 /* RedditWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDFA7172A34FC0046A593 /* RedditWrapper.m */; };
+		247CDFAD172A34FC0046A593 /* Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDFA9172A34FC0046A593 /* Share.m */; };
+		247CDFB0172A356A0046A593 /* Reddits.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDFAF172A356A0046A593 /* Reddits.m */; };
+		247CDFB5172A35BD0046A593 /* backIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDFB1172A35BD0046A593 /* backIcon.png */; };
+		247CDFB6172A35BD0046A593 /* backIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDFB2172A35BD0046A593 /* backIcon@2x.png */; };
+		247CDFB7172A35BD0046A593 /* forwardIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDFB3172A35BD0046A593 /* forwardIcon.png */; };
+		247CDFB8172A35BD0046A593 /* forwardIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDFB4172A35BD0046A593 /* forwardIcon@2x.png */; };
+		24F6F13F16F112F0004BEFE7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F6F13E16F112F0004BEFE7 /* SystemConfiguration.framework */; };
+		24F6F179170BA703004BEFE7 /* fontawesome-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 24F6F178170BA703004BEFE7 /* fontawesome-webfont.ttf */; };
+		24F6F1E51718B7E6004BEFE7 /* RedditsModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 24F6F1E31718B7E6004BEFE7 /* RedditsModel.xcdatamodeld */; };
+		24F6F1FC1719402E004BEFE7 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F6F1FB1719402E004BEFE7 /* CoreData.framework */; };
+		320AF8492C47A4D819F7C451 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 320AF8492C47A4D819F7C450 /* QuartzCore.framework */; };
+		41D5A395D00C42A9BCF7C378 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8606F4831E704B028BE49D1B /* libPods.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2438BBDF16F103DA00AA6625 /* Cool Reddit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cool Reddit.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2438BBE216F103DA00AA6625 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		2438BBE416F103DA00AA6625 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		2438BBE616F103DA00AA6625 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		2438BBEA16F103DA00AA6625 /* Cool Reddit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Cool Reddit-Info.plist"; sourceTree = "<group>"; };
+		2438BBEC16F103DA00AA6625 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2438BBEE16F103DA00AA6625 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		2438BBF016F103DA00AA6625 /* Cool Reddit-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cool Reddit-Prefix.pch"; sourceTree = "<group>"; };
+		2438BBF116F103DA00AA6625 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		2438BBF216F103DA00AA6625 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		2438BBF416F103DA00AA6625 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		2438BBF616F103DA00AA6625 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		2438BBF816F103DA00AA6625 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		2438BBFF16F103F400AA6625 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		247CDEE7171F2A5F0046A593 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
+		247CDEE8171F2A5F0046A593 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
+		247CDF911729F7FB0046A593 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		247CDF921729F7FB0046A593 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		247CDF96172A34830046A593 /* CommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CommentViewController.h; path = Controllers/CommentViewController.h; sourceTree = "<group>"; };
+		247CDF97172A34830046A593 /* CommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CommentViewController.m; path = Controllers/CommentViewController.m; sourceTree = "<group>"; };
+		247CDF98172A34830046A593 /* MyRedditsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyRedditsViewController.h; path = Controllers/MyRedditsViewController.h; sourceTree = "<group>"; };
+		247CDF99172A34830046A593 /* MyRedditsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyRedditsViewController.m; path = Controllers/MyRedditsViewController.m; sourceTree = "<group>"; };
+		247CDF9A172A34830046A593 /* RedditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RedditViewController.h; path = Controllers/RedditViewController.h; sourceTree = "<group>"; };
+		247CDF9B172A34830046A593 /* RedditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RedditViewController.m; path = Controllers/RedditViewController.m; sourceTree = "<group>"; };
+		247CDF9C172A34830046A593 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WebViewController.h; path = Controllers/WebViewController.h; sourceTree = "<group>"; };
+		247CDF9D172A34830046A593 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WebViewController.m; path = Controllers/WebViewController.m; sourceTree = "<group>"; };
+		247CDFA2172A34FC0046A593 /* ActivityDisplay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ActivityDisplay.h; path = Helpers/ActivityDisplay.h; sourceTree = "<group>"; };
+		247CDFA3172A34FC0046A593 /* ActivityDisplay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ActivityDisplay.m; path = Helpers/ActivityDisplay.m; sourceTree = "<group>"; };
+		247CDFA4172A34FC0046A593 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+HTML.h"; path = "Helpers/NSString+HTML.h"; sourceTree = "<group>"; };
+		247CDFA5172A34FC0046A593 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+HTML.m"; path = "Helpers/NSString+HTML.m"; sourceTree = "<group>"; };
+		247CDFA6172A34FC0046A593 /* RedditWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RedditWrapper.h; path = Helpers/RedditWrapper.h; sourceTree = "<group>"; };
+		247CDFA7172A34FC0046A593 /* RedditWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RedditWrapper.m; path = Helpers/RedditWrapper.m; sourceTree = "<group>"; };
+		247CDFA8172A34FC0046A593 /* Share.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Share.h; path = Helpers/Share.h; sourceTree = "<group>"; };
+		247CDFA9172A34FC0046A593 /* Share.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Share.m; path = Helpers/Share.m; sourceTree = "<group>"; };
+		247CDFAE172A356A0046A593 /* Reddits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reddits.h; path = Models/Reddits.h; sourceTree = "<group>"; };
+		247CDFAF172A356A0046A593 /* Reddits.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reddits.m; path = Models/Reddits.m; sourceTree = "<group>"; };
+		247CDFB1172A35BD0046A593 /* backIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = backIcon.png; path = WebIcons/backIcon.png; sourceTree = "<group>"; };
+		247CDFB2172A35BD0046A593 /* backIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "backIcon@2x.png"; path = "WebIcons/backIcon@2x.png"; sourceTree = "<group>"; };
+		247CDFB3172A35BD0046A593 /* forwardIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = forwardIcon.png; path = WebIcons/forwardIcon.png; sourceTree = "<group>"; };
+		247CDFB4172A35BD0046A593 /* forwardIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "forwardIcon@2x.png"; path = "WebIcons/forwardIcon@2x.png"; sourceTree = "<group>"; };
+		24F6F13E16F112F0004BEFE7 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		24F6F178170BA703004BEFE7 /* fontawesome-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fontawesome-webfont.ttf"; sourceTree = "<group>"; };
+		24F6F1E41718B7E6004BEFE7 /* RedditsModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RedditsModel.xcdatamodel; sourceTree = "<group>"; };
+		24F6F1FB1719402E004BEFE7 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		320AF8492C47A4D819F7C450 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.frameworks; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		74B3958D4E3C44C390EFC29E /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
+		8606F4831E704B028BE49D1B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2438BBDC16F103DA00AA6625 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24F6F1FC1719402E004BEFE7 /* CoreData.framework in Frameworks */,
+				24F6F13F16F112F0004BEFE7 /* SystemConfiguration.framework in Frameworks */,
+				320AF8492C47A4D819F7C451 /* QuartzCore.framework in Frameworks */,
+				2438BC0016F103F400AA6625 /* MobileCoreServices.framework in Frameworks */,
+				2438BBE316F103DA00AA6625 /* UIKit.framework in Frameworks */,
+				2438BBE516F103DA00AA6625 /* Foundation.framework in Frameworks */,
+				2438BBE716F103DA00AA6625 /* CoreGraphics.framework in Frameworks */,
+				41D5A395D00C42A9BCF7C378 /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2438BBD616F103DA00AA6625 = {
+			isa = PBXGroup;
+			children = (
+				2438BBE816F103DA00AA6625 /* redditapp */,
+				2438BBE116F103DA00AA6625 /* Frameworks */,
+				2438BBE016F103DA00AA6625 /* Products */,
+				74B3958D4E3C44C390EFC29E /* Pods.xcconfig */,
+			);
+			sourceTree = "<group>";
+		};
+		2438BBE016F103DA00AA6625 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2438BBDF16F103DA00AA6625 /* Cool Reddit.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2438BBE116F103DA00AA6625 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				24F6F1FB1719402E004BEFE7 /* CoreData.framework */,
+				24F6F13E16F112F0004BEFE7 /* SystemConfiguration.framework */,
+				320AF8492C47A4D819F7C450 /* QuartzCore.framework */,
+				2438BBFF16F103F400AA6625 /* MobileCoreServices.framework */,
+				2438BBE216F103DA00AA6625 /* UIKit.framework */,
+				2438BBE416F103DA00AA6625 /* Foundation.framework */,
+				2438BBE616F103DA00AA6625 /* CoreGraphics.framework */,
+				8606F4831E704B028BE49D1B /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2438BBE816F103DA00AA6625 /* redditapp */ = {
+			isa = PBXGroup;
+			children = (
+				2438BBF116F103DA00AA6625 /* AppDelegate.h */,
+				2438BBF216F103DA00AA6625 /* AppDelegate.m */,
+				247CDF561728B1290046A593 /* Controllers */,
+				247CDF571728B7D50046A593 /* Helpers */,
+				247CDF951729F93F0046A593 /* Models */,
+				2438BBE916F103DA00AA6625 /* Supporting Files */,
+				24F6F16F17064573004BEFE7 /* WebIcons */,
+			);
+			path = redditapp;
+			sourceTree = "<group>";
+		};
+		2438BBE916F103DA00AA6625 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				247CDF911729F7FB0046A593 /* Icon.png */,
+				247CDF921729F7FB0046A593 /* Icon@2x.png */,
+				247CDEE7171F2A5F0046A593 /* Icon-72.png */,
+				247CDEE8171F2A5F0046A593 /* Icon-72@2x.png */,
+				24F6F178170BA703004BEFE7 /* fontawesome-webfont.ttf */,
+				2438BBEA16F103DA00AA6625 /* Cool Reddit-Info.plist */,
+				2438BBEB16F103DA00AA6625 /* InfoPlist.strings */,
+				2438BBEE16F103DA00AA6625 /* main.m */,
+				2438BBF016F103DA00AA6625 /* Cool Reddit-Prefix.pch */,
+				2438BBF416F103DA00AA6625 /* Default.png */,
+				2438BBF616F103DA00AA6625 /* Default@2x.png */,
+				2438BBF816F103DA00AA6625 /* Default-568h@2x.png */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		247CDF561728B1290046A593 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				247CDF96172A34830046A593 /* CommentViewController.h */,
+				247CDF97172A34830046A593 /* CommentViewController.m */,
+				247CDF98172A34830046A593 /* MyRedditsViewController.h */,
+				247CDF99172A34830046A593 /* MyRedditsViewController.m */,
+				247CDF9A172A34830046A593 /* RedditViewController.h */,
+				247CDF9B172A34830046A593 /* RedditViewController.m */,
+				247CDF9C172A34830046A593 /* WebViewController.h */,
+				247CDF9D172A34830046A593 /* WebViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		247CDF571728B7D50046A593 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				247CDFA2172A34FC0046A593 /* ActivityDisplay.h */,
+				247CDFA3172A34FC0046A593 /* ActivityDisplay.m */,
+				247CDFA4172A34FC0046A593 /* NSString+HTML.h */,
+				247CDFA5172A34FC0046A593 /* NSString+HTML.m */,
+				247CDFA6172A34FC0046A593 /* RedditWrapper.h */,
+				247CDFA7172A34FC0046A593 /* RedditWrapper.m */,
+				247CDFA8172A34FC0046A593 /* Share.h */,
+				247CDFA9172A34FC0046A593 /* Share.m */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
+		247CDF951729F93F0046A593 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				247CDFAE172A356A0046A593 /* Reddits.h */,
+				247CDFAF172A356A0046A593 /* Reddits.m */,
+				24F6F1E31718B7E6004BEFE7 /* RedditsModel.xcdatamodeld */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		24F6F16F17064573004BEFE7 /* WebIcons */ = {
+			isa = PBXGroup;
+			children = (
+				247CDFB1172A35BD0046A593 /* backIcon.png */,
+				247CDFB2172A35BD0046A593 /* backIcon@2x.png */,
+				247CDFB3172A35BD0046A593 /* forwardIcon.png */,
+				247CDFB4172A35BD0046A593 /* forwardIcon@2x.png */,
+			);
+			name = WebIcons;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2438BBDE16F103DA00AA6625 /* Cool Reddit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2438BBFC16F103DA00AA6625 /* Build configuration list for PBXNativeTarget "Cool Reddit" */;
+			buildPhases = (
+				2438BBDB16F103DA00AA6625 /* Sources */,
+				2438BBDC16F103DA00AA6625 /* Frameworks */,
+				2438BBDD16F103DA00AA6625 /* Resources */,
+				0A45BEC9C1874D00B4BCB629 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Cool Reddit";
+			productName = redditapp;
+			productReference = 2438BBDF16F103DA00AA6625 /* Cool Reddit.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2438BBD716F103DA00AA6625 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = tangbroski;
+			};
+			buildConfigurationList = 2438BBDA16F103DA00AA6625 /* Build configuration list for PBXProject "Cool Reddit" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 2438BBD616F103DA00AA6625;
+			productRefGroup = 2438BBE016F103DA00AA6625 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2438BBDE16F103DA00AA6625 /* Cool Reddit */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2438BBDD16F103DA00AA6625 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2438BBED16F103DA00AA6625 /* InfoPlist.strings in Resources */,
+				2438BBF516F103DA00AA6625 /* Default.png in Resources */,
+				2438BBF716F103DA00AA6625 /* Default@2x.png in Resources */,
+				2438BBF916F103DA00AA6625 /* Default-568h@2x.png in Resources */,
+				24F6F179170BA703004BEFE7 /* fontawesome-webfont.ttf in Resources */,
+				247CDEE9171F2A600046A593 /* Icon-72.png in Resources */,
+				247CDEEA171F2A600046A593 /* Icon-72@2x.png in Resources */,
+				247CDF931729F7FB0046A593 /* Icon.png in Resources */,
+				247CDF941729F7FB0046A593 /* Icon@2x.png in Resources */,
+				247CDFB5172A35BD0046A593 /* backIcon.png in Resources */,
+				247CDFB6172A35BD0046A593 /* backIcon@2x.png in Resources */,
+				247CDFB7172A35BD0046A593 /* forwardIcon.png in Resources */,
+				247CDFB8172A35BD0046A593 /* forwardIcon@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0A45BEC9C1874D00B4BCB629 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2438BBDB16F103DA00AA6625 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2438BBEF16F103DA00AA6625 /* main.m in Sources */,
+				2438BBF316F103DA00AA6625 /* AppDelegate.m in Sources */,
+				24F6F1E51718B7E6004BEFE7 /* RedditsModel.xcdatamodeld in Sources */,
+				247CDF9E172A34830046A593 /* CommentViewController.m in Sources */,
+				247CDF9F172A34830046A593 /* MyRedditsViewController.m in Sources */,
+				247CDFA0172A34830046A593 /* RedditViewController.m in Sources */,
+				247CDFA1172A34830046A593 /* WebViewController.m in Sources */,
+				247CDFAA172A34FC0046A593 /* ActivityDisplay.m in Sources */,
+				247CDFAB172A34FC0046A593 /* NSString+HTML.m in Sources */,
+				247CDFAC172A34FC0046A593 /* RedditWrapper.m in Sources */,
+				247CDFAD172A34FC0046A593 /* Share.m in Sources */,
+				247CDFB0172A356A0046A593 /* Reddits.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		2438BBEB16F103DA00AA6625 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2438BBEC16F103DA00AA6625 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2438BBFA16F103DA00AA6625 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(BUILT_PRODUCTS_DIR)/../three20",
+					"$(BUILT_PRODUCTS_DIR)/../../three20",
+					../three20/Build/Products/three20,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		2438BBFB16F103DA00AA6625 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(BUILT_PRODUCTS_DIR)/../three20",
+					"$(BUILT_PRODUCTS_DIR)/../../three20",
+					../three20/Build/Products/three20,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = "-ObjC";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		2438BBFD16F103DA00AA6625 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 74B3958D4E3C44C390EFC29E /* Pods.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer: Matt Tang (GW8SP38H2Y)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Matt Tang (GW8SP38H2Y)";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "redditapp/Cool Reddit-Prefix.pch";
+				INFOPLIST_FILE = "redditapp/Cool Reddit-Info.plist";
+				PRODUCT_NAME = "Cool Reddit";
+				PROVISIONING_PROFILE = "15D17E2F-B53C-4541-848A-4CFFE584B2DA";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "15D17E2F-B53C-4541-848A-4CFFE584B2DA";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		2438BBFE16F103DA00AA6625 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 74B3958D4E3C44C390EFC29E /* Pods.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "redditapp/Cool Reddit-Prefix.pch";
+				INFOPLIST_FILE = "redditapp/Cool Reddit-Info.plist";
+				PRODUCT_NAME = "Cool Reddit";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2438BBDA16F103DA00AA6625 /* Build configuration list for PBXProject "Cool Reddit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2438BBFA16F103DA00AA6625 /* Debug */,
+				2438BBFB16F103DA00AA6625 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2438BBFC16F103DA00AA6625 /* Build configuration list for PBXNativeTarget "Cool Reddit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2438BBFD16F103DA00AA6625 /* Debug */,
+				2438BBFE16F103DA00AA6625 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		24F6F1E31718B7E6004BEFE7 /* RedditsModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				24F6F1E41718B7E6004BEFE7 /* RedditsModel.xcdatamodel */,
+			);
+			currentVersion = 24F6F1E41718B7E6004BEFE7 /* RedditsModel.xcdatamodel */;
+			path = RedditsModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 2438BBD716F103DA00AA6625 /* Project object */;
+}
