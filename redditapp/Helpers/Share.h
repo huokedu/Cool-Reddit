@@ -10,12 +10,12 @@
 
 @interface Share : NSObject
 
-@property (nonatomic, retain) NSString *permalink;
-@property (nonatomic, retain) NSString *redditName;
-@property (nonatomic, retain) NSString *selftext;
-@property (nonatomic, retain) NSURL *link;
-@property (nonatomic, retain) NSString *title;
-@property (nonatomic, retain) NSString *author;
+@property (nonatomic, strong) NSString *permalink;
+@property (nonatomic, strong) NSString *redditName;
+@property (nonatomic, strong) NSString *selftext;
+@property (nonatomic, strong) NSURL *link;
+@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong) NSString *author;
 
 + (id)sharedInstance;
 @end
