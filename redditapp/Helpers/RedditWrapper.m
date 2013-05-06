@@ -47,6 +47,7 @@
                                
                                if (_errorJson != nil) {
                                    NSLog(@"JSON Request Error %@", [_errorJson localizedDescription]);
+                                   NSLog(@"Handled behind the scenes for now");
                                    [self.delegate returnedJSON:nil];
                                } else {
                                    //Do something with returned array
