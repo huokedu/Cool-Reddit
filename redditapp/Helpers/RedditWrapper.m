@@ -46,22 +46,18 @@
                                NSMutableArray *_JSON = [data mutableObjectFromJSONDataWithParseOptions:JKParseOptionNone error:&_errorJson];
                                
                                if (_errorJson != nil) {
-                                   NSLog(@"Error %@", [_errorJson localizedDescription]);
+                                   NSLog(@"JSON Request Error %@", [_errorJson localizedDescription]);
+                                   [self.delegate returnedJSON:nil];
                                } else {
                                    //Do something with returned array
                                    dispatch_async(dispatch_get_main_queue(), ^{
                                        
-                                       [self jsonSuccess:_JSON];
+                                       [self.delegate returnedJSON:_JSON];
                                    });
                                }
                                
                            }];
     
-}
-
-- (void)jsonSuccess:(id)JSON
-{
-    [self.delegate returnedJSON:JSON];
 }
 
 @end

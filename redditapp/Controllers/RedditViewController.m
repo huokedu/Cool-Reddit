@@ -352,19 +352,20 @@
 
 #pragma mark - JSON Methods
 - (void)returnedJSON:(id)JSON
-{
-    
+{    
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     [self.indicator hide];
     
-    if (posts.count > 0) {
-//        NSLog(@"Load more tapped");
-        [posts addObjectsFromArray:[[JSON objectForKey:@"data"] objectForKey:@"children"]];
+    if (JSON) {
+        if (posts.count > 0) {
+//            NSLog(@"Load more tapped");
+            [posts addObjectsFromArray:[[JSON objectForKey:@"data"] objectForKey:@"children"]];
+        }
+        if (posts.count == 0) {
+            posts = [[JSON objectForKey:@"data"] objectForKey:@"children"];
+        }
     }
-    if (posts.count == 0) {
-        posts = [[JSON objectForKey:@"data"] objectForKey:@"children"];
-    }
-            
+        
     [self.tableView reloadData];
 }
 
