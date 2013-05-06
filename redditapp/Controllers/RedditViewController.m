@@ -449,7 +449,7 @@
 - (void)setDefaultReddits
 {
     int orderingValue = 1;
-    NSMutableArray *reddits = [NSMutableArray arrayWithObjects:@"Front Page", @"AdviceAnimals", @"announcements", @"AskReddit", @"atheism", @"aww", @"bestof", @"blog", @"funny", @"gaming", @"IAmA", @"movies", @"Music", @"pics", @"politics", @"science", @"technology", @"todayilearned", @"videos", @"worldnews", @"WTF", nil];
+    NSMutableArray *reddits = [NSMutableArray arrayWithObjects:@"Front Page", @"AdviceAnimals", @"announcements", @"AskReddit", @"atheism", @"aww", @"bestof", @"blog", @"funny", @"gaming", @"IAmA", @"movies", @"Music", @"pics", @"politics", @"science", @"technology", @"todayilearned", @"videos", @"worldnews", nil];
     
     for (NSString *name in reddits) {
         NSManagedObject *redditsItem = [NSEntityDescription insertNewObjectForEntityForName:@"Reddits"
