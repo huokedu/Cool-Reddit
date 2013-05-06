@@ -3,13 +3,11 @@
 //  redditapp
 //
 //  Created by tang on 3/13/13.
-//  Copyright (c) 2013 tangbroski. All rights reserved.
+//  Copyright (c) 2013 foobar. All rights reserved.
 //
 
 // TODO
-// - Add swipe gestures
 // - Add the ability to share posts via email and text message
-// - Move the cell config to a different method, configureCell:atIndexPath:
 
 #import "RedditViewController.h"
 #import "RedditWrapper.h"
@@ -19,9 +17,9 @@
 #import "MyRedditsViewController.h"
 #import "WebViewController.h"
 #import <NimbusAttributedLabel.h>
-#import "ActivityDisplay.h"
 #import "NSString+HTML.h"
 #import <Reachability.h>
+#import "Indicator.h"
 
 #define kFontSize 13.0f
 #define kSmallFontSize 11.0f
@@ -30,15 +28,25 @@
 #define kVerticalSpacer 3.0f
 #define kMargin 10.0f
 
+#define kTitleLabelTag 1
+#define kCountLabelTag 2
+#define kAuthorLabelTag 3
+#define kTapLabelTag 4
+#define kCommentIconTag 5
+#define kLoadLabelTag 6
+
+
 @interface RedditViewController ()
 {
     NSMutableArray *posts;
 }
+@property (nonatomic, strong) Indicator *indicator;
 @end
 
 @implementation RedditViewController
 @synthesize tableView = _tableView;
 @synthesize managedObjectContext = _managedObjectContext;
+@synthesize indicator = _indicator;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -53,10 +61,18 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-
+        
+    self.indicator = [[Indicator alloc] init];
+    [self.view addSubview:self.indicator];
+    
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.tableView];
+    
+    // UISwipeGesture setup
+    UISwipeGestureRecognizer *gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(didSwipeLeft:)];
+    gestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
+    [self.tableView addGestureRecognizer:gestureRecognizer];
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -71,14 +87,14 @@
     
     self.navigationItem.rightBarButtonItem = myRedditsButton;
     
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    [[ActivityDisplay sharedInstance] showActivityIndicator];
-    
     [[Share sharedInstance] setRedditName:allRedditsString];
     
     RedditWrapper *wrapper = [[RedditWrapper alloc] init];
     [wrapper redditJSONUsingName:allRedditsString];
     wrapper.delegate = self;
+    
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    [self.indicator showWithMessage:@"Loading"];
 
 }
 
@@ -96,6 +112,12 @@
        
     [self.tableView reloadData];
 }
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self.indicator hide];
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -139,12 +161,12 @@
             loadLabel = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
             loadLabel.font = [UIFont fontWithName:@"FontAwesome" size:kLoadMoreFontSize];
             loadLabel.textAlignment = NSTextAlignmentCenter;
-            loadLabel.tag = 10;
+            loadLabel.tag = kLoadLabelTag;
             [cell.contentView addSubview:loadLabel];
         }
         
         if (!loadLabel)
-            loadLabel = (NIAttributedLabel *)[cell viewWithTag:10];
+            loadLabel = (NIAttributedLabel *)[cell viewWithTag:kLoadLabelTag];
         
         loadLabel.frame = CGRectMake(0, 10, cellWidth, 50);
         loadLabel.text = @"Load more \uf08a";
@@ -162,7 +184,7 @@
         titleLabel.font = [UIFont systemFontOfSize:kFontSize];
         titleLabel.numberOfLines = 0;
         titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        titleLabel.tag = 1;
+        titleLabel.tag = kTitleLabelTag;
         titleLabel.userInteractionEnabled = YES;
         [cell.contentView addSubview:titleLabel];
         
@@ -170,21 +192,21 @@
         countLabel.font = [UIFont systemFontOfSize:kFontSize];
         countLabel.numberOfLines = 0;
         countLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        countLabel.tag = 2;
+        countLabel.tag = kCountLabelTag;
         [cell.contentView addSubview:countLabel];
         
         authorLabel = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
         authorLabel.font = [UIFont systemFontOfSize:kSmallFontSize];
         authorLabel.numberOfLines = 0;
         authorLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        authorLabel.tag = 3;
+        authorLabel.tag = kAuthorLabelTag;
         [cell.contentView addSubview:authorLabel];
         
         tapLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         tapLabel.font = [UIFont systemFontOfSize:kFontSize];
         tapLabel.numberOfLines = 0;
         tapLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        tapLabel.tag = 4;
+        tapLabel.tag = kTapLabelTag;
         tapLabel.userInteractionEnabled = YES;
         [cell.contentView addSubview:tapLabel];
         
@@ -192,7 +214,7 @@
         commentIcon.font = [UIFont fontWithName:@"FontAwesome" size:12];
         commentIcon.numberOfLines = 0;
         commentIcon.lineBreakMode = NSLineBreakByWordWrapping;
-        commentIcon.tag = 5;
+        commentIcon.tag = kCommentIconTag;
         [cell.contentView addSubview:commentIcon];
         
     }
@@ -221,13 +243,13 @@
 
     /* Label Configs */
     if (!commentIcon)
-        commentIcon = (UILabel *)[cell viewWithTag:5];
+        commentIcon = (UILabel *)[cell viewWithTag:kCommentIconTag];
     
     [commentIcon setText:@"\uf0e5"];
     [commentIcon setFrame:CGRectMake(cellWidth - 10 - commentIconSize.width, kMargin, commentIconSize.width, commentIconSize.height)];
     
     if (!titleLabel)
-        titleLabel = (UILabel *)[cell viewWithTag:1];
+        titleLabel = (UILabel *)[cell viewWithTag:kTitleLabelTag];
     
     title = [title decodeHTMLEntities];
     [titleLabel setText:title];
@@ -236,19 +258,19 @@
     [titleLabel addGestureRecognizer:tapGesture];
     
     if (!tapLabel)
-        tapLabel = (UILabel *)[cell viewWithTag:4];
+        tapLabel = (UILabel *)[cell viewWithTag:kTapLabelTag];
     [tapLabel setFrame:CGRectMake(kMargin, 0, titleWidth, 10)];
     UITapGestureRecognizer *tapGesture2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapTitleLabel:)];
     [tapLabel addGestureRecognizer:tapGesture2];
     
     if (!countLabel)
-        countLabel = (UILabel *)[cell viewWithTag:2];
+        countLabel = (UILabel *)[cell viewWithTag:kCountLabelTag];
 
     [countLabel setText:count];
     [countLabel setFrame:CGRectMake(kMargin + titleWidth + kHorizontalSpacer, kMargin + commentIconSize.height, countSize.width, countSize.height)];
     
     if (!authorLabel)
-        authorLabel = (NIAttributedLabel *)[cell viewWithTag:3];
+        authorLabel = (NIAttributedLabel *)[cell viewWithTag:kAuthorLabelTag];
     
     [authorLabel setText:[NSString stringWithFormat:@"%@ %@ %@", author, ups, domain]];
     UIColor *upsColor = [UIColor colorWithRed:77.0f/255.0f green:139.0f/255.0f blue:77.0f/255.0f alpha:1];
@@ -329,13 +351,11 @@
 
 
 #pragma mark - JSON Methods
-// TODO
-// Move extra value returns into RedditWrapper
 - (void)returnedJSON:(id)JSON
 {
     
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    [[ActivityDisplay sharedInstance] hideActivityIndicator];
+    [self.indicator hide];
     
     if (posts.count > 0) {
 //        NSLog(@"Load more tapped");
@@ -360,13 +380,17 @@
 }
 
 - (void)selectedReddit:(NSString *)name
-{
+{    
     // Clear out the posts array
     posts = nil;
         
     RedditWrapper *model = [[RedditWrapper alloc] init];
     [model redditJSONUsingName:name];
     [model setDelegate:self];
+    
+    // Show Indicator
+    [self.indicator showWithMessage:@"Loading"];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
     [[Share sharedInstance] setRedditName:name];
     
@@ -376,7 +400,7 @@
 - (void)didTapTitleLabel:(id)sender
 {
     UITapGestureRecognizer *tapGesture = (UITapGestureRecognizer *)sender;
-    if ((tapGesture.view.tag == 1) | (tapGesture.view.tag == 4)) {
+    if ((tapGesture.view.tag == kTitleLabelTag) | (tapGesture.view.tag == kTapLabelTag)) {
         
         CGPoint touchLocation = [tapGesture locationOfTouch:0 inView:self.tableView];
         NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:touchLocation];
@@ -452,6 +476,17 @@
         [alert show];
     }
     
+}
+
+- (void)didSwipeLeft:(UIGestureRecognizer *)gestureRecognizer
+{
+//    NSLog(@"Swiped left");
+    if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        CGPoint swipeLocation = [gestureRecognizer locationInView:self.tableView];
+        NSIndexPath *swipeIndexPath = [self.tableView indexPathForRowAtPoint:swipeLocation];
+        
+        [self tableView:self.tableView didSelectRowAtIndexPath:swipeIndexPath];
+    }
 }
 
 @end

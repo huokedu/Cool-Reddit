@@ -3,7 +3,7 @@
 //  redditapp
 //
 //  Created by tang on 3/25/13.
-//  Copyright (c) 2013 tangbroski. All rights reserved.
+//  Copyright (c) 2013 foobar. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -12,7 +12,7 @@
 @class MyRedditsViewController;
 @protocol MyRedditsViewControllerDelegate <NSObject>
 
-@optional
+@required
 - (void)selectedReddit:(NSString *)name;
 
 @end

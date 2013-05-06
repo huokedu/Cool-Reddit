@@ -3,23 +3,23 @@
 //  redditapp
 //
 //  Created by tang on 3/27/13.
-//  Copyright (c) 2013 tangbroski. All rights reserved.
+//  Copyright (c) 2013 foobar. All rights reserved.
 //
 
 // TODO
-// - Add a loading notification
 // - Add the ability to share via email and text message
 
 #import "WebViewController.h"
 #import "Share.h"
+#import "Indicator.h"
 
 @interface WebViewController ()
-
+@property (nonatomic, strong) Indicator *indicator;
 @end
 
 @implementation WebViewController
 @synthesize webView = _webView;
-
+@synthesize indicator = _indicator;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -34,6 +34,9 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
 
+    self.indicator = [[Indicator alloc] init];
+    [self.view addSubview:self.indicator];
+    
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(didTapBackButton)];
     
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -57,11 +60,10 @@
     self.navigationController.toolbarHidden = NO;
     
     // Create a UIWebView and set it to the webView property
-    UIWebView *webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
-    webView.scalesPageToFit = YES;
-    webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    
-    self.webView = webView;
+    self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
+    self.webView.scalesPageToFit = YES;
+    self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.webView.delegate = self;
     
     [self.webView loadRequest:[NSURLRequest requestWithURL:[[Share sharedInstance] link]]];
     [self.view addSubview:self.webView];
@@ -109,6 +111,22 @@
 - (void)didTapRefreshButton
 {
     [self.webView reload];
+}
+
+#pragma mark - UIWebView Delegate Methods
+
+- (void)webViewDidStartLoad:(UIWebView *)webView
+{
+//    NSLog(@"webViewDidStartLoad");
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    [self.indicator showWithMessage:nil];
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+//    NSLog(@"webViewDidFinishLoad");
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    [self.indicator hide];
 }
 
 @end

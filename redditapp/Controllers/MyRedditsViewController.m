@@ -3,22 +3,26 @@
 //  redditapp
 //
 //  Created by tang on 3/25/13.
-//  Copyright (c) 2013 tangbroski. All rights reserved.
+//  Copyright (c) 2013 foobar. All rights reserved.
 //
 
 #import "MyRedditsViewController.h"
 #import <QuartzCore/QuartzCore.h>
-#import "ActivityDisplay.h"
 #import "Reddits.h"
+#import "TBMessage.h"
 
 #define kFontSize 17.0f
 #define kDeleteFontSize 15.0f
 #define kMargin 15.0f
 #define kTextFieldFont 18.0f
 
+#define kNameLabelTag 1
+#define kDeleteLabelTag 2
+
 @interface MyRedditsViewController ()
 @property (nonatomic, strong) NSMutableArray *redditsArray;
 @property (nonatomic, copy) NSArray *fetchedObjects;
+@property (nonatomic, strong) NSMutableArray *badWords;
 @end
 
 @implementation MyRedditsViewController
@@ -27,12 +31,17 @@
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize redditsArray = _redditsArray;
 @synthesize fetchedObjects = _fetchedObjects;
+@synthesize badWords= _badWords;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        self.badWords = [NSMutableArray arrayWithObjects:@"nsfw", @"ass", @"milf", @"bdsm", @"sex", @"porn", @"boobies", @"curvy", @"amateur", @"cumsluts", @"ginger", @"penis", @"blowjobs", @"gore", @"lesbians", @"bikinis", @"asshole", @"fuck", @"dick", @"incest", @"cleavage", @"hentai", @"boobs", @"tits", @"bitches", @"bitch", @"sexy", @"butt", nil];
+        
+        self.redditsArray = [NSMutableArray array];
+
     }
     return self;
 }
@@ -42,12 +51,9 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    self.redditsArray = [NSMutableArray array];
-    
     [self fetchRedditsFromDb];
     
     [self setupView];
-    
 }
 
 // Move this into loadView
@@ -122,7 +128,7 @@
         NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:touchLocation];
         
         // Remove the item from the db first before removing it from the array
-        [self removeItemFromDb:[[self.redditsArray objectAtIndex:indexPath.row] description]];
+        [self removeItemFromDb:[self.redditsArray objectAtIndex:indexPath.row]];
 
         [self.redditsArray removeObjectAtIndex:indexPath.row];
         
@@ -140,7 +146,7 @@
 - (void)setDefaultReddits
 {
     int orderingValue = 1;
-    NSMutableArray *reddits = [NSMutableArray arrayWithObjects:@"Front Page", @"AdviceAnimals", @"announcements", @"AskReddit", @"atheism", @"aww", @"bestof", @"blog", @"funny", @"gaming", @"IAmA", @"movies", @"Music", @"pics", @"politics", @"science", @"technology", @"todayilearned", @"videos", @"worldnews", @"WTF", nil];
+    NSMutableArray *reddits = [NSMutableArray arrayWithObjects:@"Front Page", @"AdviceAnimals", @"announcements", @"AskReddit", @"atheism", @"aww", @"bestof", @"blog", @"funny", @"gaming", @"IAmA", @"movies", @"Music", @"pics", @"politics", @"science", @"technology", @"todayilearned", @"videos", @"worldnews", nil];
     
     for (NSString *name in reddits) {
         NSManagedObject *redditsItem = [NSEntityDescription insertNewObjectForEntityForName:@"Reddits"
@@ -181,7 +187,7 @@
     [self.managedObjectContext save:&error];
     
     if (error != nil) {
-        NSLog(@"updateOrderAndSave Error %@", [error localizedDescription]);
+        NSLog(@"updateOrderAndSave Save Error %@", [error localizedDescription]);
     }
 }
 
@@ -196,20 +202,27 @@
     request.predicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"name == '%@'", name]];
     
     NSError *error = nil;
-    NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *fetchedItems = [self.managedObjectContext executeFetchRequest:request error:&error];
     
-    if (error != nil) {
-        NSLog(@"removeItemFromDb Error %@", [error localizedDescription]);
+    if (error) {
+        NSLog(@"removeItemFromDb Fetch Error %@", [error localizedDescription]);
     }
     
-    for (NSManagedObject *item in results) {
+    for (NSManagedObject *item in fetchedItems) {
         [self.managedObjectContext deleteObject:item];
+    }
+    
+    [self.managedObjectContext save:&error];
+
+    if (error) {
+        NSLog(@"removeItemFromDb Save Error %@", [error localizedDescription]);
     }
     
 }
 
 - (void)fetchRedditsFromDb
 {
+    [self.redditsArray removeAllObjects];
     NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"orderingValue"
                                                          ascending:YES];
     
@@ -275,24 +288,42 @@
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
-    NSCharacterSet *alphabet = [NSCharacterSet letterCharacterSet];
-    BOOL valid = [[textField.text stringByTrimmingCharactersInSet:alphabet] isEqualToString:@""];
+    NSString *string = textField.text;
+    NSString *trimmedString = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     
-    // Quick censor to appease the App Store reviewer
-    if ([textField.text isEqualToString:@"sex"] | [textField.text isEqualToString:@"Sex"] | [textField.text isEqualToString:@"porn"] | [textField.text isEqualToString:@"Porn"]) {
-        
-        textField.text = @"";
+    NSCharacterSet *alphabet = [NSCharacterSet letterCharacterSet];
+    BOOL valid = [[trimmedString stringByTrimmingCharactersInSet:alphabet] isEqualToString:@""];
+    
+    // Screen out some bad words
+    // Remove [c] for case sensitivity
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF LIKE[c] %@", trimmedString];
+    NSArray *badWordsResults = [self.badWords filteredArrayUsingPredicate:predicate];
+    
+    if (badWordsResults.count > 0) {
+        // Censored word, clear UITextfield and return YES
+        [[TBMessage sharedInstance] showMessage:@"You can't add this Reddit." withMessageType:MessageTypeError inViewController:self];
+
         return YES;
     }
     
-    if ((([[textField text] length] > 0) & valid) | ([textField.text compare:@"Front Page"
+    if (((trimmedString.length > 0) & valid) | ([trimmedString compare:@"Front Page"
                                                                      options:NSCaseInsensitiveSearch] == NSOrderedSame)) {
-        
         [self fetchRedditsFromDb];
         
-        [self updateOrderAndSave:textField.text];
+        // Check for duplicate
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF LIKE[c] %@", trimmedString];
+        NSArray *duplicateResults = [self.redditsArray filteredArrayUsingPredicate:predicate];
         
-        [self.redditsArray insertObject:textField.text atIndex:0];
+        if (duplicateResults.count > 0) {
+            [[TBMessage sharedInstance] showMessage:[NSString stringWithFormat:@"%@ already exists.", trimmedString] withMessageType:MessageTypeError inViewController:self];
+
+            return YES;
+        }
+        
+        
+        [self updateOrderAndSave:trimmedString];
+        
+        [self.redditsArray insertObject:trimmedString atIndex:0];
         [self.tableView reloadData];
     }
     
@@ -328,19 +359,19 @@
         
         nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         nameLabel.font = [UIFont systemFontOfSize:kFontSize];
-        nameLabel.tag = 1;
+        nameLabel.tag = kNameLabelTag;
         [cell.contentView addSubview:nameLabel];
         
         deleteLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         deleteLabel.font = [UIFont fontWithName:@"FontAwesome" size:kDeleteFontSize];
         deleteLabel.textAlignment = NSTextAlignmentCenter;
-        deleteLabel.tag = 2;
+        deleteLabel.tag = kDeleteLabelTag;
         deleteLabel.userInteractionEnabled = YES;
         [cell.contentView addSubview:deleteLabel];
     }
     
     if (!nameLabel)
-        nameLabel = (UILabel *)[cell.contentView viewWithTag:1];
+        nameLabel = (UILabel *)[cell.contentView viewWithTag:kNameLabelTag];
     
     // Custom setup
     nameLabel.text = [self.redditsArray objectAtIndex:indexPath.row];
@@ -351,7 +382,7 @@
     nameLabel.frame = CGRectMake(kMargin, kMargin, nameWidth, nameHeight);
     
     if (!deleteLabel)
-        deleteLabel = (UILabel *)[cell.contentView viewWithTag:2];
+        deleteLabel = (UILabel *)[cell.contentView viewWithTag:kDeleteLabelTag];
     
     CGSize deleteSize = [@"\uf068" sizeWithFont:[UIFont fontWithName:@"FontAwesome" size:kDeleteFontSize]];
     
@@ -370,7 +401,6 @@
     CGFloat height = [name sizeWithFont:[UIFont systemFontOfSize:kFontSize]].height;
     
     return height + (kMargin * 2);
-    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -386,10 +416,6 @@
         
         [self.delegate selectedReddit:name];
     }
-    
-    // Show ActivityDisplay, the delegate method will call the hide
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    [[ActivityDisplay sharedInstance] showActivityIndicator];
     
     [self dismissViewControllerAnimated:YES completion:nil];
 }

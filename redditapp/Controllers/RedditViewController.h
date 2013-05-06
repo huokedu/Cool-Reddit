@@ -3,7 +3,7 @@
 //  redditapp
 //
 //  Created by tang on 3/13/13.
-//  Copyright (c) 2013 tangbroski. All rights reserved.
+//  Copyright (c) 2013 foobar. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

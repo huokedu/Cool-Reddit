@@ -3,7 +3,7 @@
 //  redditapp
 //
 //  Created by tang on 3/13/13.
-//  Copyright (c) 2013 tangbroski. All rights reserved.
+//  Copyright (c) 2013 foobar. All rights reserved.
 //
 
 #import "CommentViewController.h"
@@ -11,10 +11,10 @@
 #import "RedditWrapper.h"
 #import <NimbusAttributedLabel.h>
 #import "WebViewController.h"
-#import "ActivityDisplay.h"
 #import <QuartzCore/QuartzCore.h>
 #import "NSString+HTML.h"
 #import <Reachability.h>
+#import "Indicator.h"
 
 #define kFontSize 13.0f
 #define kTitleFontSize 14.0f
@@ -23,20 +23,29 @@
 #define kMargin 10.0f
 #define kIndent 10.0f
 
+#define kCommentLabelTag 1
+#define kAuthorLabelForCommentCellTag 2
+#define kSelftextLabelTag 3
+#define kTitleLabelTag 4
+#define kAuthorLabelForFirstCellTag 5
+
 @interface CommentViewController ()
 {
     NSMutableArray *holder;
 }
+@property (nonatomic, strong) Indicator *indicator;
 @end
 
 @implementation CommentViewController
 @synthesize tableView = _tableView;
+@synthesize indicator = _indicator;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+
     }
     return self;
 }
@@ -46,12 +55,18 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
+    self.indicator = [[Indicator alloc] init];
+    [self.view addSubview:self.indicator];
+    
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
-
     [self.view addSubview:self.tableView];
+    
+    UISwipeGestureRecognizer *gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(didSwipeRight:)];
+    gestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
+    [self.tableView addGestureRecognizer:gestureRecognizer];
     
     [self showComments];
 }
@@ -69,7 +84,8 @@
         // Back button was pressed. We know this is true because self is no longer
         // in the navigation stack.
         
-        [[ActivityDisplay sharedInstance] hideActivityIndicator];
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        [self.indicator hide];
     }
 }
 
@@ -84,19 +100,17 @@
 // The JSON will return via returnedJSON: once it has downloaded
 - (void)showComments
 {
-    // Show the Activity Indicator
-    // Hide it in returnedJSON:
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    [[ActivityDisplay sharedInstance] showActivityIndicator];
-    
     RedditWrapper *wrapper = [[RedditWrapper alloc] init];
     wrapper.delegate = self;
     [wrapper commentsJSONUsingPermalink:[[Share sharedInstance] permalink]];
+    
+    // Show the Indicator
+    // Hide it in returnedJSON:
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    [self.indicator showWithMessage:@"Loading"];
 }
 
 #pragma mark - JSON Methods
-// TODO
-// Move extra value returns into RedditWrapper
 
 - (void)returnedJSON:(id)JSON
 {
@@ -113,13 +127,10 @@
     
     // Hides the Activity Display from showComments
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    [[ActivityDisplay sharedInstance] hideActivityIndicator];
+    [self.indicator hide];
 }
 
-// TODO
-// Move this parsing method into RedditWrapper
-
-// Iterates through the JSON and returns an array
+// Iterates through the JSON using recursion and returns an array
 // Each element of the array has a dictionary with each comment
 - (void)build:(id)jsonDict
        indent:(int)indent
@@ -131,7 +142,6 @@
             [holder addObject:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:indent], @"indent", [[commentJSON objectForKey:@"body"] description], @"comment", [[commentJSON objectForKey:@"author"] description], @"author", nil]];
             indent = indent + 1;
             
-            // Check if replies exist, if so, use some recursion
             if (![[[commentJSON objectForKey:@"replies"] description] isEqualToString:@""]) {
 
                 NSArray *childrenArray = [[[commentJSON objectForKey:@"replies"] objectForKey:@"data"] objectForKey:@"children"];
@@ -152,15 +162,6 @@
 {
     [self.tableView reloadData];
     
-    CGPoint screenCenter;
-    if (UIInterfaceOrientationIsPortrait(fromInterfaceOrientation)) {
-        screenCenter = CGPointMake([[UIScreen mainScreen] bounds].size.width/2, [[UIScreen mainScreen] bounds].size.height/2);
-    } else {
-        screenCenter = CGPointMake([[UIScreen mainScreen] bounds].size.width/2, [[UIScreen mainScreen] bounds].size.height/2);
-    }
-    
-    [[ActivityDisplay sharedInstance] repositionView:screenCenter];
-    
 }
 
 - (void)testInternetConnection
@@ -173,7 +174,7 @@
     
 }
 
-#pragma mark - UITableView Methods
+#pragma mark - UITableViewDelegate Methods
 
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section
@@ -181,13 +182,12 @@
     return holder.count + 1;
 }
 
-// TODO
-// Pull out the configuration part of the cell and put it in configureCell:forIndexPath:
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NIAttributedLabel *commentLabel = nil;
-    NIAttributedLabel *authorLabel = nil;
+    NIAttributedLabel *authorLabelForFirstCell = nil;
+    NIAttributedLabel *authorLabelForCommentCell = nil;
     NIAttributedLabel *selftextLabel = nil;
     NIAttributedLabel *titleLabel = nil;
     
@@ -208,24 +208,24 @@
             commentLabel.font = [UIFont systemFontOfSize:kFontSize];
             commentLabel.numberOfLines = 0;
             commentLabel.lineBreakMode = NSLineBreakByWordWrapping;
-            commentLabel.tag = 1;
+            commentLabel.tag = kCommentLabelTag;
             commentLabel.autoDetectLinks = YES;
             commentLabel.deferLinkDetection = YES;
             commentLabel.delegate = self;
             [cell.contentView addSubview:commentLabel];
             
-            authorLabel = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
-            authorLabel.font = [UIFont systemFontOfSize:kAuthorFontSize];
-            authorLabel.numberOfLines = 0;
-            authorLabel.lineBreakMode = NSLineBreakByWordWrapping;
-            authorLabel.tag = 3;
-            [cell.contentView addSubview:authorLabel];
+            authorLabelForCommentCell = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
+            authorLabelForCommentCell.font = [UIFont systemFontOfSize:kAuthorFontSize];
+            authorLabelForCommentCell.numberOfLines = 0;
+            authorLabelForCommentCell.lineBreakMode = NSLineBreakByWordWrapping;
+            authorLabelForCommentCell.tag = kAuthorLabelForCommentCellTag;
+            [cell.contentView addSubview:authorLabelForCommentCell];
         } else {
             selftextLabel = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
             selftextLabel.font = [UIFont systemFontOfSize:kFontSize];
             selftextLabel.numberOfLines = 0;
             selftextLabel.lineBreakMode = NSLineBreakByWordWrapping;
-            selftextLabel.tag = 4;
+            selftextLabel.tag = kSelftextLabelTag;
             selftextLabel.autoDetectLinks = YES;
             selftextLabel.delegate = self;
             [cell.contentView addSubview:selftextLabel];
@@ -234,17 +234,17 @@
             titleLabel.font = [UIFont boldSystemFontOfSize:kTitleFontSize];
             titleLabel.numberOfLines = 0;
             titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-            titleLabel.tag = 5;
+            titleLabel.tag = kTitleLabelTag;
             titleLabel.autoDetectLinks = YES;
             titleLabel.delegate = self;
             [cell.contentView addSubview:titleLabel];
             
-            authorLabel = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
-            authorLabel.font = [UIFont systemFontOfSize:kMainAuthorFont];
-            authorLabel.numberOfLines = 0;
-            authorLabel.lineBreakMode = NSLineBreakByWordWrapping;
-            authorLabel.tag = 6;
-            [cell.contentView addSubview:authorLabel];
+            authorLabelForFirstCell = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
+            authorLabelForFirstCell.font = [UIFont systemFontOfSize:kMainAuthorFont];
+            authorLabelForFirstCell.numberOfLines = 0;
+            authorLabelForFirstCell.lineBreakMode = NSLineBreakByWordWrapping;
+            authorLabelForFirstCell.tag = kAuthorLabelForFirstCellTag;
+            [cell.contentView addSubview:authorLabelForFirstCell];
             
         }
 
@@ -274,22 +274,22 @@
         
         /* Additional Label Configs */
         if (!titleLabel)
-            titleLabel = (NIAttributedLabel *)[cell viewWithTag:5];
+            titleLabel = (NIAttributedLabel *)[cell viewWithTag:kTitleLabelTag];
         [titleLabel setText:title];
         [titleLabel setFont:[UIFont boldSystemFontOfSize:kTitleFontSize]];
         [titleLabel setFrame:CGRectMake(kMargin, kMargin, titleSize.width, titleSize.height)];
         
-        if (!authorLabel)
-            authorLabel = (NIAttributedLabel *)[cell viewWithTag:6];
-        [authorLabel setText:author];
+        if (!authorLabelForFirstCell)
+            authorLabelForFirstCell = (NIAttributedLabel *)[cell viewWithTag:kAuthorLabelForFirstCellTag];
+        [authorLabelForFirstCell setText:author];
         UIColor *authorColor = [UIColor colorWithRed:255.0f/255.0f green:123.0f/255.0f blue:41.0f/255.0f alpha:1];
 
-        [authorLabel setTextColor:authorColor range:[authorLabel.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
-        [authorLabel setFont:[UIFont systemFontOfSize:kMainAuthorFont]];
-        [authorLabel setFrame:CGRectMake(kMargin, kMargin + titleSize.height, authorSize.width, authorSize.height)];
+        [authorLabelForFirstCell setTextColor:authorColor range:[authorLabelForFirstCell.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
+        [authorLabelForFirstCell setFont:[UIFont systemFontOfSize:kMainAuthorFont]];
+        [authorLabelForFirstCell setFrame:CGRectMake(kMargin, kMargin + titleSize.height, authorSize.width, authorSize.height)];
         
         if (!selftextLabel)
-            selftextLabel = (NIAttributedLabel *)[cell viewWithTag:4];
+            selftextLabel = (NIAttributedLabel *)[cell viewWithTag:kSelftextLabelTag];
         [selftextLabel setText:selftext];
         [selftextLabel setFrame:CGRectMake(kMargin, kMargin + authorSize.height + titleSize.height +2, selftextSize.width, selftextSize.height)];
         
@@ -321,25 +321,24 @@
                                  lineBreakMode:NSLineBreakByWordWrapping];
     
     /* Additional Label Configs */
-    if (!authorLabel)
-        authorLabel = (NIAttributedLabel *)[cell viewWithTag:3];
+    if (!authorLabelForCommentCell)
+        authorLabelForCommentCell = (NIAttributedLabel *)[cell viewWithTag:kAuthorLabelForCommentCellTag];
     
-    [authorLabel setText:author];
-    [authorLabel setFrame:CGRectMake(kMargin + (kIndent * indentLevel), kMargin, authorSize.width, authorSize.height)];
+    [authorLabelForCommentCell setText:author];
+    [authorLabelForCommentCell setFrame:CGRectMake(kMargin + (kIndent * indentLevel), kMargin, authorSize.width, authorSize.height)];
 
     if ([author isEqualToString:[[Share sharedInstance] author]]) {
         UIColor *authorColor = [UIColor colorWithRed:254.0f/255.0f green:131.0f/255.0f blue:51.0f/255.0f alpha:1];
 
-        [authorLabel setTextColor:authorColor range:[authorLabel.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
+        [authorLabelForCommentCell setTextColor:authorColor range:[authorLabelForCommentCell.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
     } else {
         UIColor *authorColor = [UIColor colorWithRed:76.0f/255.0f green:112.0f/255.0f blue:163.0f/255.0f alpha:1];
-        [authorLabel setTextColor:authorColor range:[authorLabel.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
+        [authorLabelForCommentCell setTextColor:authorColor range:[authorLabelForCommentCell.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
     }
     
     if (!commentLabel)
-        commentLabel = (NIAttributedLabel *)[cell viewWithTag:1];
+        commentLabel = (NIAttributedLabel *)[cell viewWithTag:kCommentLabelTag];
     
-
     [commentLabel setText:comment];
     [commentLabel setFrame:CGRectMake(kMargin + (kIndent * indentLevel), kMargin + authorSize.height, commentSize.width, commentSize.height)];
     
@@ -413,7 +412,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     return width - (indentLevel * kIndent);
 }
 
-#pragma mark - NIAttributedLabel Delegate Method
+#pragma mark - NIAttributedLabelDelegate Method
 
 - (void)attributedLabel:(NIAttributedLabel *)attributedLabel
 didSelectTextCheckingResult:(NSTextCheckingResult *)result atPoint:(CGPoint)point
@@ -422,6 +421,17 @@ didSelectTextCheckingResult:(NSTextCheckingResult *)result atPoint:(CGPoint)poin
     [[Share sharedInstance] setLink:result.URL];
     
     [[self navigationController] pushViewController:webController animated:YES];
+}
+
+#pragma mark -
+
+- (void)didSwipeRight:(UIGestureRecognizer *)gestureRecognizer
+{
+//    NSLog(@"Swiped right");
+    if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    
 }
 
 @end

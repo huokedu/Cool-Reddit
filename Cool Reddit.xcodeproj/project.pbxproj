@@ -25,7 +25,6 @@
 		247CDF9F172A34830046A593 /* MyRedditsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDF99172A34830046A593 /* MyRedditsViewController.m */; };
 		247CDFA0172A34830046A593 /* RedditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDF9B172A34830046A593 /* RedditViewController.m */; };
 		247CDFA1172A34830046A593 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDF9D172A34830046A593 /* WebViewController.m */; };
-		247CDFAA172A34FC0046A593 /* ActivityDisplay.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDFA3172A34FC0046A593 /* ActivityDisplay.m */; };
 		247CDFAB172A34FC0046A593 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDFA5172A34FC0046A593 /* NSString+HTML.m */; };
 		247CDFAC172A34FC0046A593 /* RedditWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDFA7172A34FC0046A593 /* RedditWrapper.m */; };
 		247CDFAD172A34FC0046A593 /* Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDFA9172A34FC0046A593 /* Share.m */; };
@@ -34,6 +33,8 @@
 		247CDFB6172A35BD0046A593 /* backIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDFB2172A35BD0046A593 /* backIcon@2x.png */; };
 		247CDFB7172A35BD0046A593 /* forwardIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDFB3172A35BD0046A593 /* forwardIcon.png */; };
 		247CDFB8172A35BD0046A593 /* forwardIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDFB4172A35BD0046A593 /* forwardIcon@2x.png */; };
+		248A73A31737696500E0611A /* TBMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 248A73A21737696500E0611A /* TBMessage.m */; };
+		24DDD4981735BF8D00C2190C /* Indicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DDD4971735BF8D00C2190C /* Indicator.m */; };
 		24F6F13F16F112F0004BEFE7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F6F13E16F112F0004BEFE7 /* SystemConfiguration.framework */; };
 		24F6F179170BA703004BEFE7 /* fontawesome-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 24F6F178170BA703004BEFE7 /* fontawesome-webfont.ttf */; };
 		24F6F1E51718B7E6004BEFE7 /* RedditsModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 24F6F1E31718B7E6004BEFE7 /* RedditsModel.xcdatamodeld */; };
@@ -49,7 +50,7 @@
 		2438BBE616F103DA00AA6625 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		2438BBEA16F103DA00AA6625 /* Cool Reddit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Cool Reddit-Info.plist"; sourceTree = "<group>"; };
 		2438BBEC16F103DA00AA6625 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		2438BBEE16F103DA00AA6625 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		2438BBEE16F103DA00AA6625 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = main.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		2438BBF016F103DA00AA6625 /* Cool Reddit-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cool Reddit-Prefix.pch"; sourceTree = "<group>"; };
 		2438BBF116F103DA00AA6625 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		2438BBF216F103DA00AA6625 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -61,28 +62,30 @@
 		247CDEE8171F2A5F0046A593 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
 		247CDF911729F7FB0046A593 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		247CDF921729F7FB0046A593 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
-		247CDF96172A34830046A593 /* CommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CommentViewController.h; path = Controllers/CommentViewController.h; sourceTree = "<group>"; };
-		247CDF97172A34830046A593 /* CommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CommentViewController.m; path = Controllers/CommentViewController.m; sourceTree = "<group>"; };
-		247CDF98172A34830046A593 /* MyRedditsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyRedditsViewController.h; path = Controllers/MyRedditsViewController.h; sourceTree = "<group>"; };
-		247CDF99172A34830046A593 /* MyRedditsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyRedditsViewController.m; path = Controllers/MyRedditsViewController.m; sourceTree = "<group>"; };
-		247CDF9A172A34830046A593 /* RedditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RedditViewController.h; path = Controllers/RedditViewController.h; sourceTree = "<group>"; };
-		247CDF9B172A34830046A593 /* RedditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RedditViewController.m; path = Controllers/RedditViewController.m; sourceTree = "<group>"; };
-		247CDF9C172A34830046A593 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WebViewController.h; path = Controllers/WebViewController.h; sourceTree = "<group>"; };
-		247CDF9D172A34830046A593 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WebViewController.m; path = Controllers/WebViewController.m; sourceTree = "<group>"; };
-		247CDFA2172A34FC0046A593 /* ActivityDisplay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ActivityDisplay.h; path = Helpers/ActivityDisplay.h; sourceTree = "<group>"; };
-		247CDFA3172A34FC0046A593 /* ActivityDisplay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ActivityDisplay.m; path = Helpers/ActivityDisplay.m; sourceTree = "<group>"; };
-		247CDFA4172A34FC0046A593 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+HTML.h"; path = "Helpers/NSString+HTML.h"; sourceTree = "<group>"; };
-		247CDFA5172A34FC0046A593 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+HTML.m"; path = "Helpers/NSString+HTML.m"; sourceTree = "<group>"; };
-		247CDFA6172A34FC0046A593 /* RedditWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RedditWrapper.h; path = Helpers/RedditWrapper.h; sourceTree = "<group>"; };
-		247CDFA7172A34FC0046A593 /* RedditWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RedditWrapper.m; path = Helpers/RedditWrapper.m; sourceTree = "<group>"; };
-		247CDFA8172A34FC0046A593 /* Share.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Share.h; path = Helpers/Share.h; sourceTree = "<group>"; };
-		247CDFA9172A34FC0046A593 /* Share.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Share.m; path = Helpers/Share.m; sourceTree = "<group>"; };
-		247CDFAE172A356A0046A593 /* Reddits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reddits.h; path = Models/Reddits.h; sourceTree = "<group>"; };
-		247CDFAF172A356A0046A593 /* Reddits.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reddits.m; path = Models/Reddits.m; sourceTree = "<group>"; };
+		247CDF96172A34830046A593 /* CommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = CommentViewController.h; path = Controllers/CommentViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		247CDF97172A34830046A593 /* CommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = CommentViewController.m; path = Controllers/CommentViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		247CDF98172A34830046A593 /* MyRedditsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = MyRedditsViewController.h; path = Controllers/MyRedditsViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		247CDF99172A34830046A593 /* MyRedditsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = MyRedditsViewController.m; path = Controllers/MyRedditsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		247CDF9A172A34830046A593 /* RedditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = RedditViewController.h; path = Controllers/RedditViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		247CDF9B172A34830046A593 /* RedditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = RedditViewController.m; path = Controllers/RedditViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		247CDF9C172A34830046A593 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = WebViewController.h; path = Controllers/WebViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		247CDF9D172A34830046A593 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = WebViewController.m; path = Controllers/WebViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		247CDFA4172A34FC0046A593 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = "NSString+HTML.h"; path = "Helpers/NSString+HTML.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		247CDFA5172A34FC0046A593 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = "NSString+HTML.m"; path = "Helpers/NSString+HTML.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		247CDFA6172A34FC0046A593 /* RedditWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = RedditWrapper.h; path = Helpers/RedditWrapper.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		247CDFA7172A34FC0046A593 /* RedditWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = RedditWrapper.m; path = Helpers/RedditWrapper.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		247CDFA8172A34FC0046A593 /* Share.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = Share.h; path = Helpers/Share.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		247CDFA9172A34FC0046A593 /* Share.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = Share.m; path = Helpers/Share.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		247CDFAE172A356A0046A593 /* Reddits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = Reddits.h; path = Models/Reddits.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		247CDFAF172A356A0046A593 /* Reddits.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = Reddits.m; path = Models/Reddits.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		247CDFB1172A35BD0046A593 /* backIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = backIcon.png; path = WebIcons/backIcon.png; sourceTree = "<group>"; };
 		247CDFB2172A35BD0046A593 /* backIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "backIcon@2x.png"; path = "WebIcons/backIcon@2x.png"; sourceTree = "<group>"; };
 		247CDFB3172A35BD0046A593 /* forwardIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = forwardIcon.png; path = WebIcons/forwardIcon.png; sourceTree = "<group>"; };
 		247CDFB4172A35BD0046A593 /* forwardIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "forwardIcon@2x.png"; path = "WebIcons/forwardIcon@2x.png"; sourceTree = "<group>"; };
+		248A73A11737696500E0611A /* TBMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBMessage.h; path = Helpers/TBMessage.h; sourceTree = "<group>"; };
+		248A73A21737696500E0611A /* TBMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TBMessage.m; path = Helpers/TBMessage.m; sourceTree = "<group>"; };
+		24DDD4961735BF8D00C2190C /* Indicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Indicator.h; path = Helpers/Indicator.h; sourceTree = "<group>"; };
+		24DDD4971735BF8D00C2190C /* Indicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Indicator.m; path = Helpers/Indicator.m; sourceTree = "<group>"; };
 		24F6F13E16F112F0004BEFE7 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		24F6F178170BA703004BEFE7 /* fontawesome-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fontawesome-webfont.ttf"; sourceTree = "<group>"; };
 		24F6F1E41718B7E6004BEFE7 /* RedditsModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RedditsModel.xcdatamodel; sourceTree = "<group>"; };
@@ -195,14 +198,16 @@
 		247CDF571728B7D50046A593 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				247CDFA2172A34FC0046A593 /* ActivityDisplay.h */,
-				247CDFA3172A34FC0046A593 /* ActivityDisplay.m */,
+				248A73A11737696500E0611A /* TBMessage.h */,
+				248A73A21737696500E0611A /* TBMessage.m */,
 				247CDFA4172A34FC0046A593 /* NSString+HTML.h */,
 				247CDFA5172A34FC0046A593 /* NSString+HTML.m */,
 				247CDFA6172A34FC0046A593 /* RedditWrapper.h */,
 				247CDFA7172A34FC0046A593 /* RedditWrapper.m */,
 				247CDFA8172A34FC0046A593 /* Share.h */,
 				247CDFA9172A34FC0046A593 /* Share.m */,
+				24DDD4961735BF8D00C2190C /* Indicator.h */,
+				24DDD4971735BF8D00C2190C /* Indicator.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -327,11 +332,12 @@
 				247CDF9F172A34830046A593 /* MyRedditsViewController.m in Sources */,
 				247CDFA0172A34830046A593 /* RedditViewController.m in Sources */,
 				247CDFA1172A34830046A593 /* WebViewController.m in Sources */,
-				247CDFAA172A34FC0046A593 /* ActivityDisplay.m in Sources */,
 				247CDFAB172A34FC0046A593 /* NSString+HTML.m in Sources */,
 				247CDFAC172A34FC0046A593 /* RedditWrapper.m in Sources */,
 				247CDFAD172A34FC0046A593 /* Share.m in Sources */,
 				247CDFB0172A356A0046A593 /* Reddits.m in Sources */,
+				24DDD4981735BF8D00C2190C /* Indicator.m in Sources */,
+				248A73A31737696500E0611A /* TBMessage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
