@@ -14,6 +14,6 @@ Make sure "Cool Reddit" is selected as the Scheme when you build and run the app
 
 ## Screenshots
 
-More screenshots can be found here: http://imgur.com/a/mc8IY#1
+More screenshots can be found here: http://imgur.com/a/1k6AM#1
 
-![Screenshot](http://i.imgur.com/TshoPeU.png)
+![Screenshot](http://i.imgur.com/rsStMW8.png)
