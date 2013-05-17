@@ -59,13 +59,22 @@
 // Move this into loadView
 - (void)setupView
 {
-    // Create a UIView that with the size of the whole frame    
-    UIColor *tintColor = [UIColor colorWithRed:77.0f/255.0f green:139.0f/255.0f blue:77.0f/255.0f alpha:1];
-    self.navigationController.navigationBar.tintColor = tintColor;
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"nav"] forBarMetrics:UIBarMetricsDefault];
     
     self.navigationItem.title = @"Reddits";
     
     UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(close)];
+    
+    [closeButton setBackgroundImage:[[UIImage imageNamed:@"nav_button_30"]
+                                     resizableImageWithCapInsets:UIEdgeInsetsMake(0, 2, 0, 2)]
+                           forState:UIControlStateNormal
+                         barMetrics:UIBarMetricsDefault];
+    
+    [closeButton setBackgroundImage:[[UIImage imageNamed:@"nav_button_24"]
+                                     resizableImageWithCapInsets:UIEdgeInsetsMake(0, 2, 0, 2)]
+                           forState:UIControlStateNormal
+                         barMetrics:UIBarMetricsLandscapePhone];
+
     self.navigationItem.rightBarButtonItem = closeButton;
     
     // Calculates the height needed for the UITextField with a dummy string

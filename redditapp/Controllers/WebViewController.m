@@ -45,7 +45,7 @@
     UIBarButtonItem *forwardButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"forwardIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(didTapForwardButton)];
         
     UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(didTapRefreshButton)];
-    
+
     NSArray *buttonArray = [NSArray arrayWithObjects:flexibleSpace, backButton, flexibleSpace, forwardButton, flexibleSpace, refreshButton, flexibleSpace, nil];
     
     [self setToolbarItems:buttonArray];
@@ -58,6 +58,7 @@
     [super viewWillAppear:animated];
     
     self.navigationController.toolbarHidden = NO;
+//    [self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"nav"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
     
     // Create a UIWebView and set it to the webView property
     self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];

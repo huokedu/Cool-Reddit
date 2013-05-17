@@ -17,9 +17,9 @@
 #import "MyRedditsViewController.h"
 #import "WebViewController.h"
 #import <NimbusAttributedLabel.h>
-#import "NSString+HTML.h"
 #import <Reachability.h>
 #import "Indicator.h"
+#import "GTMNSString+HTML.h"
 
 #define kFontSize 13.0f
 #define kSmallFontSize 11.0f
@@ -84,6 +84,16 @@
     }
     
     UIBarButtonItem *myRedditsButton = [[UIBarButtonItem alloc] initWithTitle:@"Reddits" style:UIBarButtonItemStylePlain target:self action:@selector(showMyReddits)];
+    
+    [myRedditsButton setBackgroundImage:[[UIImage imageNamed:@"nav_button_30"]
+                                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 2, 0, 2)]
+                               forState:UIControlStateNormal
+                             barMetrics:UIBarMetricsDefault];
+    
+    [myRedditsButton setBackgroundImage:[[UIImage imageNamed:@"nav_button_24"]
+                                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 2, 0, 2)]
+                               forState:UIControlStateNormal
+                             barMetrics:UIBarMetricsLandscapePhone];
     
     self.navigationItem.rightBarButtonItem = myRedditsButton;
     
@@ -251,7 +261,7 @@
     if (!titleLabel)
         titleLabel = (UILabel *)[cell viewWithTag:kTitleLabelTag];
     
-    title = [title decodeHTMLEntities];
+    title = [title gtm_stringByUnescapingFromHTML];
     [titleLabel setText:title];
     [titleLabel setFrame:CGRectMake(kMargin, kMargin, titleWidth, titleSize.height)];
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapTitleLabel:)];
@@ -296,7 +306,7 @@
         dict = [dict objectForKey:@"data"];
         
         // Set Share Singleton properties to be used in the CommentViewController
-        [[Share sharedInstance] setSelftext:[[dict objectForKey:@"selftext"] decodeHTMLEntities]];
+        [[Share sharedInstance] setSelftext:[[dict objectForKey:@"selftext"] gtm_stringByUnescapingFromHTML]];
         [[Share sharedInstance] setPermalink:[dict objectForKey:@"permalink"]];
         [[Share sharedInstance] setTitle:[dict objectForKey:@"title"]];
         [[Share sharedInstance] setAuthor:[dict objectForKey:@"author"]];
@@ -317,7 +327,7 @@
         /* Gets Data */
         NSDictionary *dict = [[posts objectAtIndex:[indexPath row]] objectForKey:@"data"];
         NSString *title = [[dict objectForKey:@"title"] description];
-        title = [title decodeHTMLEntities];
+        title = [title gtm_stringByUnescapingFromHTML];
         
         NSString *count = [[dict objectForKey:@"num_comments"] description];
         NSString *author = [[dict objectForKey:@"author"] description];

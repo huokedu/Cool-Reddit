@@ -12,12 +12,12 @@
 #import <NimbusAttributedLabel.h>
 #import "WebViewController.h"
 #import <QuartzCore/QuartzCore.h>
-#import "NSString+HTML.h"
 #import <Reachability.h>
 #import "Indicator.h"
+#import "GTMNSString+HTML.h"
 
 #define kFontSize 13.0f
-#define kTitleFontSize 14.0f
+#define kTitleFontSize 13.0f
 #define kMainAuthorFont 11.0f
 #define kAuthorFontSize 11.0f
 #define kMargin 10.0f
@@ -256,7 +256,7 @@
         NSString *title = [[Share sharedInstance] title];
         NSString *selftext = [[Share sharedInstance] selftext];
         selftext = [selftext stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSString *author = [NSString stringWithFormat:@"- %@", [[Share sharedInstance] author]];
+        NSString *author = [NSString stringWithFormat:@"%@", [[Share sharedInstance] author]];
         
         
         /* Size Calculations */
@@ -277,21 +277,21 @@
             titleLabel = (NIAttributedLabel *)[cell viewWithTag:kTitleLabelTag];
         [titleLabel setText:title];
         [titleLabel setFont:[UIFont boldSystemFontOfSize:kTitleFontSize]];
-        [titleLabel setFrame:CGRectMake(kMargin, kMargin, titleSize.width, titleSize.height)];
+        [titleLabel setFrame:CGRectMake(kMargin, kMargin + authorSize.height + 1, titleSize.width, titleSize.height)];
         
         if (!authorLabelForFirstCell)
             authorLabelForFirstCell = (NIAttributedLabel *)[cell viewWithTag:kAuthorLabelForFirstCellTag];
         [authorLabelForFirstCell setText:author];
-        UIColor *authorColor = [UIColor colorWithRed:255.0f/255.0f green:123.0f/255.0f blue:41.0f/255.0f alpha:1];
+        UIColor *authorColor = [UIColor colorWithRed:231.0f/255.0f green:76.0f/255.0f blue:60.0f/255.0f alpha:1];
 
         [authorLabelForFirstCell setTextColor:authorColor range:[authorLabelForFirstCell.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
         [authorLabelForFirstCell setFont:[UIFont systemFontOfSize:kMainAuthorFont]];
-        [authorLabelForFirstCell setFrame:CGRectMake(kMargin, kMargin + titleSize.height, authorSize.width, authorSize.height)];
+        [authorLabelForFirstCell setFrame:CGRectMake(kMargin, kMargin, authorSize.width, authorSize.height)];
         
         if (!selftextLabel)
             selftextLabel = (NIAttributedLabel *)[cell viewWithTag:kSelftextLabelTag];
         [selftextLabel setText:selftext];
-        [selftextLabel setFrame:CGRectMake(kMargin, kMargin + authorSize.height + titleSize.height +2, selftextSize.width, selftextSize.height)];
+        [selftextLabel setFrame:CGRectMake(kMargin, kMargin + authorSize.height + titleSize.height + 2, selftextSize.width, selftextSize.height)];
         
         return cell;
     }
@@ -302,7 +302,7 @@
     NSDictionary *dict = [holder objectAtIndex:indexLessOne];
     NSString *comment = [[dict objectForKey:@"comment"] description];
     comment = [comment stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    comment = [comment decodeHTMLEntities];
+    comment = [comment gtm_stringByUnescapingFromHTML];
     
     NSInteger indentLevel = [[dict objectForKey:@"indent"] integerValue];
     NSString *author = [[dict objectForKey:@"author"] description];
@@ -328,7 +328,7 @@
     [authorLabelForCommentCell setFrame:CGRectMake(kMargin + (kIndent * indentLevel), kMargin, authorSize.width, authorSize.height)];
 
     if ([author isEqualToString:[[Share sharedInstance] author]]) {
-        UIColor *authorColor = [UIColor colorWithRed:254.0f/255.0f green:131.0f/255.0f blue:51.0f/255.0f alpha:1];
+        UIColor *authorColor = [UIColor colorWithRed:231.0f/255.0f green:76.0f/255.0f blue:60.0f/255.0f alpha:1];
 
         [authorLabelForCommentCell setTextColor:authorColor range:[authorLabelForCommentCell.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
     } else {
@@ -381,7 +381,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     NSDictionary *dict = [holder objectAtIndex:indexLessOne];
     NSString *comment = [[dict objectForKey:@"comment"] description];
     comment = [comment stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    comment = [comment decodeHTMLEntities];
+    comment = [comment gtm_stringByUnescapingFromHTML];
     
     NSString *author = [[dict objectForKey:@"author"] description];
     NSInteger indentLevel = [[dict objectForKey:@"indent"] integerValue];
@@ -419,8 +419,22 @@ didSelectTextCheckingResult:(NSTextCheckingResult *)result atPoint:(CGPoint)poin
 {
     WebViewController *webController = [[WebViewController alloc] init];
     [[Share sharedInstance] setLink:result.URL];
+        
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Comments" style:UIBarButtonItemStylePlain target:self action:@selector(didTapBackButton)];
+    [backButton setBackgroundImage:[[UIImage imageNamed:@"nav_back_30"]
+                                    resizableImageWithCapInsets:UIEdgeInsetsMake(0, 11, 0, 2)]
+                          forState:UIControlStateNormal
+                        barMetrics:UIBarMetricsDefault];
     
-    [[self navigationController] pushViewController:webController animated:YES];
+    [backButton setBackgroundImage:[[UIImage imageNamed:@"nav_back_24"]
+                                    resizableImageWithCapInsets:UIEdgeInsetsMake(0, 11, 0, 2)]
+                          forState:UIControlStateNormal
+                        barMetrics:UIBarMetricsLandscapePhone];
+    
+    [backButton setTitlePositionAdjustment:UIOffsetMake(3, 0) forBarMetrics:UIBarMetricsDefault];
+        
+    [webController.navigationItem setLeftBarButtonItem:backButton];
+    [self.navigationController pushViewController:webController animated:YES];
 }
 
 #pragma mark -
@@ -432,6 +446,11 @@ didSelectTextCheckingResult:(NSTextCheckingResult *)result atPoint:(CGPoint)poin
         [self.navigationController popViewControllerAnimated:YES];
     }
     
+}
+
+- (void)didTapBackButton
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

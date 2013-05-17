@@ -17,6 +17,21 @@
 		2438BBF716F103DA00AA6625 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2438BBF616F103DA00AA6625 /* Default@2x.png */; };
 		2438BBF916F103DA00AA6625 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2438BBF816F103DA00AA6625 /* Default-568h@2x.png */; };
 		2438BC0016F103F400AA6625 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2438BBFF16F103F400AA6625 /* MobileCoreServices.framework */; };
+		244B9C661745CE0A00F44006 /* nav_back_24.png in Resources */ = {isa = PBXBuildFile; fileRef = 244B9C5E1745CE0A00F44006 /* nav_back_24.png */; };
+		244B9C671745CE0A00F44006 /* nav_back_24@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 244B9C5F1745CE0A00F44006 /* nav_back_24@2x.png */; };
+		244B9C681745CE0A00F44006 /* nav_back_30.png in Resources */ = {isa = PBXBuildFile; fileRef = 244B9C601745CE0A00F44006 /* nav_back_30.png */; };
+		244B9C691745CE0A00F44006 /* nav_back_30@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 244B9C611745CE0A00F44006 /* nav_back_30@2x.png */; };
+		244B9C6A1745CE0A00F44006 /* nav_button_24.png in Resources */ = {isa = PBXBuildFile; fileRef = 244B9C621745CE0A00F44006 /* nav_button_24.png */; };
+		244B9C6B1745CE0A00F44006 /* nav_button_24@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 244B9C631745CE0A00F44006 /* nav_button_24@2x.png */; };
+		244B9C6C1745CE0A00F44006 /* nav_button_30.png in Resources */ = {isa = PBXBuildFile; fileRef = 244B9C641745CE0A00F44006 /* nav_button_30.png */; };
+		244B9C6D1745CE0A00F44006 /* nav_button_30@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 244B9C651745CE0A00F44006 /* nav_button_30@2x.png */; };
+		244B9C701745CE2800F44006 /* nav.png in Resources */ = {isa = PBXBuildFile; fileRef = 244B9C6E1745CE2800F44006 /* nav.png */; };
+		244B9C711745CE2800F44006 /* nav@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 244B9C6F1745CE2800F44006 /* nav@2x.png */; };
+		244B9C811746BB2200F44006 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 244B9C801746BB2200F44006 /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		244B9C901746D21800F44006 /* backIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 244B9C8C1746D21800F44006 /* backIcon.png */; };
+		244B9C911746D21800F44006 /* backIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 244B9C8D1746D21800F44006 /* backIcon@2x.png */; };
+		244B9C921746D21800F44006 /* forwardIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 244B9C8E1746D21800F44006 /* forwardIcon.png */; };
+		244B9C931746D21800F44006 /* forwardIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 244B9C8F1746D21800F44006 /* forwardIcon@2x.png */; };
 		247CDEE9171F2A600046A593 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDEE7171F2A5F0046A593 /* Icon-72.png */; };
 		247CDEEA171F2A600046A593 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDEE8171F2A5F0046A593 /* Icon-72@2x.png */; };
 		247CDF931729F7FB0046A593 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDF911729F7FB0046A593 /* Icon.png */; };
@@ -25,14 +40,9 @@
 		247CDF9F172A34830046A593 /* MyRedditsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDF99172A34830046A593 /* MyRedditsViewController.m */; };
 		247CDFA0172A34830046A593 /* RedditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDF9B172A34830046A593 /* RedditViewController.m */; };
 		247CDFA1172A34830046A593 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDF9D172A34830046A593 /* WebViewController.m */; };
-		247CDFAB172A34FC0046A593 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDFA5172A34FC0046A593 /* NSString+HTML.m */; };
 		247CDFAC172A34FC0046A593 /* RedditWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDFA7172A34FC0046A593 /* RedditWrapper.m */; };
 		247CDFAD172A34FC0046A593 /* Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDFA9172A34FC0046A593 /* Share.m */; };
 		247CDFB0172A356A0046A593 /* Reddits.m in Sources */ = {isa = PBXBuildFile; fileRef = 247CDFAF172A356A0046A593 /* Reddits.m */; };
-		247CDFB5172A35BD0046A593 /* backIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDFB1172A35BD0046A593 /* backIcon.png */; };
-		247CDFB6172A35BD0046A593 /* backIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDFB2172A35BD0046A593 /* backIcon@2x.png */; };
-		247CDFB7172A35BD0046A593 /* forwardIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDFB3172A35BD0046A593 /* forwardIcon.png */; };
-		247CDFB8172A35BD0046A593 /* forwardIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 247CDFB4172A35BD0046A593 /* forwardIcon@2x.png */; };
 		248A73A31737696500E0611A /* TBMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 248A73A21737696500E0611A /* TBMessage.m */; };
 		24DDD4981735BF8D00C2190C /* Indicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DDD4971735BF8D00C2190C /* Indicator.m */; };
 		24F6F13F16F112F0004BEFE7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F6F13E16F112F0004BEFE7 /* SystemConfiguration.framework */; };
@@ -58,6 +68,23 @@
 		2438BBF616F103DA00AA6625 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		2438BBF816F103DA00AA6625 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		2438BBFF16F103F400AA6625 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		244B9C5E1745CE0A00F44006 /* nav_back_24.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = nav_back_24.png; path = Resources/nav_back_24.png; sourceTree = "<group>"; };
+		244B9C5F1745CE0A00F44006 /* nav_back_24@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "nav_back_24@2x.png"; path = "Resources/nav_back_24@2x.png"; sourceTree = "<group>"; };
+		244B9C601745CE0A00F44006 /* nav_back_30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = nav_back_30.png; path = Resources/nav_back_30.png; sourceTree = "<group>"; };
+		244B9C611745CE0A00F44006 /* nav_back_30@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "nav_back_30@2x.png"; path = "Resources/nav_back_30@2x.png"; sourceTree = "<group>"; };
+		244B9C621745CE0A00F44006 /* nav_button_24.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = nav_button_24.png; path = Resources/nav_button_24.png; sourceTree = "<group>"; };
+		244B9C631745CE0A00F44006 /* nav_button_24@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "nav_button_24@2x.png"; path = "Resources/nav_button_24@2x.png"; sourceTree = "<group>"; };
+		244B9C641745CE0A00F44006 /* nav_button_30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = nav_button_30.png; path = Resources/nav_button_30.png; sourceTree = "<group>"; };
+		244B9C651745CE0A00F44006 /* nav_button_30@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "nav_button_30@2x.png"; path = "Resources/nav_button_30@2x.png"; sourceTree = "<group>"; };
+		244B9C6E1745CE2800F44006 /* nav.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = nav.png; path = Resources/nav.png; sourceTree = "<group>"; };
+		244B9C6F1745CE2800F44006 /* nav@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "nav@2x.png"; path = "Resources/nav@2x.png"; sourceTree = "<group>"; };
+		244B9C7E1746BB2200F44006 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMDefines.h; path = Helpers/GTMDefines.h; sourceTree = "<group>"; };
+		244B9C7F1746BB2200F44006 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "GTMNSString+HTML.h"; path = "Helpers/GTMNSString+HTML.h"; sourceTree = "<group>"; };
+		244B9C801746BB2200F44006 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "GTMNSString+HTML.m"; path = "Helpers/GTMNSString+HTML.m"; sourceTree = "<group>"; };
+		244B9C8C1746D21800F44006 /* backIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backIcon.png; sourceTree = "<group>"; };
+		244B9C8D1746D21800F44006 /* backIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backIcon@2x.png"; sourceTree = "<group>"; };
+		244B9C8E1746D21800F44006 /* forwardIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = forwardIcon.png; sourceTree = "<group>"; };
+		244B9C8F1746D21800F44006 /* forwardIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forwardIcon@2x.png"; sourceTree = "<group>"; };
 		247CDEE7171F2A5F0046A593 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
 		247CDEE8171F2A5F0046A593 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
 		247CDF911729F7FB0046A593 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
@@ -70,18 +97,12 @@
 		247CDF9B172A34830046A593 /* RedditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = RedditViewController.m; path = Controllers/RedditViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		247CDF9C172A34830046A593 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = WebViewController.h; path = Controllers/WebViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		247CDF9D172A34830046A593 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = WebViewController.m; path = Controllers/WebViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		247CDFA4172A34FC0046A593 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = "NSString+HTML.h"; path = "Helpers/NSString+HTML.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		247CDFA5172A34FC0046A593 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = "NSString+HTML.m"; path = "Helpers/NSString+HTML.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		247CDFA6172A34FC0046A593 /* RedditWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = RedditWrapper.h; path = Helpers/RedditWrapper.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		247CDFA7172A34FC0046A593 /* RedditWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = RedditWrapper.m; path = Helpers/RedditWrapper.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		247CDFA8172A34FC0046A593 /* Share.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = Share.h; path = Helpers/Share.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		247CDFA9172A34FC0046A593 /* Share.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = Share.m; path = Helpers/Share.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		247CDFAE172A356A0046A593 /* Reddits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = Reddits.h; path = Models/Reddits.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		247CDFAF172A356A0046A593 /* Reddits.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = Reddits.m; path = Models/Reddits.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		247CDFB1172A35BD0046A593 /* backIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = backIcon.png; path = WebIcons/backIcon.png; sourceTree = "<group>"; };
-		247CDFB2172A35BD0046A593 /* backIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "backIcon@2x.png"; path = "WebIcons/backIcon@2x.png"; sourceTree = "<group>"; };
-		247CDFB3172A35BD0046A593 /* forwardIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = forwardIcon.png; path = WebIcons/forwardIcon.png; sourceTree = "<group>"; };
-		247CDFB4172A35BD0046A593 /* forwardIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "forwardIcon@2x.png"; path = "WebIcons/forwardIcon@2x.png"; sourceTree = "<group>"; };
 		248A73A11737696500E0611A /* TBMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBMessage.h; path = Helpers/TBMessage.h; sourceTree = "<group>"; };
 		248A73A21737696500E0611A /* TBMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TBMessage.m; path = Helpers/TBMessage.m; sourceTree = "<group>"; };
 		24DDD4961735BF8D00C2190C /* Indicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Indicator.h; path = Helpers/Indicator.h; sourceTree = "<group>"; };
@@ -155,8 +176,8 @@
 				247CDF561728B1290046A593 /* Controllers */,
 				247CDF571728B7D50046A593 /* Helpers */,
 				247CDF951729F93F0046A593 /* Models */,
+				244B9C4D1745CDBC00F44006 /* Resources */,
 				2438BBE916F103DA00AA6625 /* Supporting Files */,
-				24F6F16F17064573004BEFE7 /* WebIcons */,
 			);
 			path = redditapp;
 			sourceTree = "<group>";
@@ -180,6 +201,36 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		244B9C4D1745CDBC00F44006 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				244B9C8B1746D21800F44006 /* Web Icons */,
+				244B9C6E1745CE2800F44006 /* nav.png */,
+				244B9C6F1745CE2800F44006 /* nav@2x.png */,
+				244B9C5E1745CE0A00F44006 /* nav_back_24.png */,
+				244B9C5F1745CE0A00F44006 /* nav_back_24@2x.png */,
+				244B9C601745CE0A00F44006 /* nav_back_30.png */,
+				244B9C611745CE0A00F44006 /* nav_back_30@2x.png */,
+				244B9C621745CE0A00F44006 /* nav_button_24.png */,
+				244B9C631745CE0A00F44006 /* nav_button_24@2x.png */,
+				244B9C641745CE0A00F44006 /* nav_button_30.png */,
+				244B9C651745CE0A00F44006 /* nav_button_30@2x.png */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		244B9C8B1746D21800F44006 /* Web Icons */ = {
+			isa = PBXGroup;
+			children = (
+				244B9C8C1746D21800F44006 /* backIcon.png */,
+				244B9C8D1746D21800F44006 /* backIcon@2x.png */,
+				244B9C8E1746D21800F44006 /* forwardIcon.png */,
+				244B9C8F1746D21800F44006 /* forwardIcon@2x.png */,
+			);
+			name = "Web Icons";
+			path = "Resources/Web Icons";
+			sourceTree = "<group>";
+		};
 		247CDF561728B1290046A593 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -198,10 +249,11 @@
 		247CDF571728B7D50046A593 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				244B9C7E1746BB2200F44006 /* GTMDefines.h */,
+				244B9C7F1746BB2200F44006 /* GTMNSString+HTML.h */,
+				244B9C801746BB2200F44006 /* GTMNSString+HTML.m */,
 				248A73A11737696500E0611A /* TBMessage.h */,
 				248A73A21737696500E0611A /* TBMessage.m */,
-				247CDFA4172A34FC0046A593 /* NSString+HTML.h */,
-				247CDFA5172A34FC0046A593 /* NSString+HTML.m */,
 				247CDFA6172A34FC0046A593 /* RedditWrapper.h */,
 				247CDFA7172A34FC0046A593 /* RedditWrapper.m */,
 				247CDFA8172A34FC0046A593 /* Share.h */,
@@ -220,17 +272,6 @@
 				24F6F1E31718B7E6004BEFE7 /* RedditsModel.xcdatamodeld */,
 			);
 			name = Models;
-			sourceTree = "<group>";
-		};
-		24F6F16F17064573004BEFE7 /* WebIcons */ = {
-			isa = PBXGroup;
-			children = (
-				247CDFB1172A35BD0046A593 /* backIcon.png */,
-				247CDFB2172A35BD0046A593 /* backIcon@2x.png */,
-				247CDFB3172A35BD0046A593 /* forwardIcon.png */,
-				247CDFB4172A35BD0046A593 /* forwardIcon@2x.png */,
-			);
-			name = WebIcons;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -294,10 +335,20 @@
 				247CDEEA171F2A600046A593 /* Icon-72@2x.png in Resources */,
 				247CDF931729F7FB0046A593 /* Icon.png in Resources */,
 				247CDF941729F7FB0046A593 /* Icon@2x.png in Resources */,
-				247CDFB5172A35BD0046A593 /* backIcon.png in Resources */,
-				247CDFB6172A35BD0046A593 /* backIcon@2x.png in Resources */,
-				247CDFB7172A35BD0046A593 /* forwardIcon.png in Resources */,
-				247CDFB8172A35BD0046A593 /* forwardIcon@2x.png in Resources */,
+				244B9C661745CE0A00F44006 /* nav_back_24.png in Resources */,
+				244B9C671745CE0A00F44006 /* nav_back_24@2x.png in Resources */,
+				244B9C681745CE0A00F44006 /* nav_back_30.png in Resources */,
+				244B9C691745CE0A00F44006 /* nav_back_30@2x.png in Resources */,
+				244B9C6A1745CE0A00F44006 /* nav_button_24.png in Resources */,
+				244B9C6B1745CE0A00F44006 /* nav_button_24@2x.png in Resources */,
+				244B9C6C1745CE0A00F44006 /* nav_button_30.png in Resources */,
+				244B9C6D1745CE0A00F44006 /* nav_button_30@2x.png in Resources */,
+				244B9C701745CE2800F44006 /* nav.png in Resources */,
+				244B9C711745CE2800F44006 /* nav@2x.png in Resources */,
+				244B9C901746D21800F44006 /* backIcon.png in Resources */,
+				244B9C911746D21800F44006 /* backIcon@2x.png in Resources */,
+				244B9C921746D21800F44006 /* forwardIcon.png in Resources */,
+				244B9C931746D21800F44006 /* forwardIcon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,12 +383,12 @@
 				247CDF9F172A34830046A593 /* MyRedditsViewController.m in Sources */,
 				247CDFA0172A34830046A593 /* RedditViewController.m in Sources */,
 				247CDFA1172A34830046A593 /* WebViewController.m in Sources */,
-				247CDFAB172A34FC0046A593 /* NSString+HTML.m in Sources */,
 				247CDFAC172A34FC0046A593 /* RedditWrapper.m in Sources */,
 				247CDFAD172A34FC0046A593 /* Share.m in Sources */,
 				247CDFB0172A356A0046A593 /* Reddits.m in Sources */,
 				24DDD4981735BF8D00C2190C /* Indicator.m in Sources */,
 				248A73A31737696500E0611A /* TBMessage.m in Sources */,
+				244B9C811746BB2200F44006 /* GTMNSString+HTML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -427,14 +478,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 74B3958D4E3C44C390EFC29E /* Pods.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Matt Tang (GW8SP38H2Y)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Matt Tang (GW8SP38H2Y)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "redditapp/Cool Reddit-Prefix.pch";
 				INFOPLIST_FILE = "redditapp/Cool Reddit-Info.plist";
 				PRODUCT_NAME = "Cool Reddit";
-				PROVISIONING_PROFILE = "15D17E2F-B53C-4541-848A-4CFFE584B2DA";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "15D17E2F-B53C-4541-848A-4CFFE584B2DA";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;

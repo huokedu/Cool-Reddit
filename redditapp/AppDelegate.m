@@ -26,9 +26,17 @@
     
     UINavigationController *navController = [[UINavigationController alloc] init];
     [navController setViewControllers:[NSArray arrayWithObject:redditController]];
-
-    UIColor *tintColor = [UIColor colorWithRed:77.0f/255.0f green:139.0f/255.0f blue:77.0f/255.0f alpha:1];
-    [navController.navigationBar setTintColor:tintColor];
+    
+    [navController.navigationBar setBackgroundImage:[UIImage imageNamed:@"nav"] forBarMetrics:UIBarMetricsDefault];
+    
+    
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[[UIImage imageNamed:@"nav_back_30"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 2)]
+                                                      forState:UIControlStateNormal
+                                                    barMetrics:UIBarMetricsDefault];
+    
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[[UIImage imageNamed:@"nav_back_24"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 11, 0, 4)]
+                                                      forState:UIControlStateNormal
+                                                    barMetrics:UIBarMetricsLandscapePhone];
     
     [self.window setRootViewController:navController];
     
