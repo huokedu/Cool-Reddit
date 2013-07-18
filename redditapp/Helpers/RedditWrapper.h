@@ -28,4 +28,6 @@
 - (void)redditJSONUsingName:(NSString *)name;
 - (void)redditJSON:(NSString *)redditName withPostName:(NSString *)postName withLimit:(NSInteger)limit;
 
+
+//- (void)commentsFromPermalink:(NSString *)link completion:(void (^)(BOOL hasComments, NSDictionary *commentsDict, NSError *error)) block;
 @end

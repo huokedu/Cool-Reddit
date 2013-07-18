@@ -21,9 +21,9 @@
 #import "Indicator.h"
 #import "GTMNSString+HTML.h"
 
-#define kFontSize 13.0f
+#define kFontSize 14.0f
 #define kSmallFontSize 11.0f
-#define kLoadMoreFontSize 14.0f
+#define kLoadMoreFontSize 16.0f
 #define kHorizontalSpacer 10.0f
 #define kVerticalSpacer 3.0f
 #define kMargin 10.0f
@@ -33,20 +33,18 @@
 #define kAuthorLabelTag 3
 #define kTapLabelTag 4
 #define kCommentIconTag 5
-#define kLoadLabelTag 6
-
+#define kLoadMoreLabelTag 6
 
 @interface RedditViewController ()
 {
-    NSMutableArray *posts;
+    NSMutableArray *_posts;
+    UIRefreshControl *_refreshControl;
+    UITableViewController *_tvc;
 }
 @property (nonatomic, strong) Indicator *indicator;
 @end
 
 @implementation RedditViewController
-@synthesize tableView = _tableView;
-@synthesize managedObjectContext = _managedObjectContext;
-@synthesize indicator = _indicator;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -61,7 +59,11 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-        
+    
+    NSDate *createdDate = [NSDate dateWithTimeIntervalSince1970:1368902001];
+
+    [self elapsedTime:createdDate];
+    
     self.indicator = [[Indicator alloc] init];
     [self.view addSubview:self.indicator];
     
@@ -105,7 +107,14 @@
     
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     [self.indicator showWithMessage:@"Loading"];
-
+    
+    _tvc = [[UITableViewController alloc] initWithStyle:self.tableView.style];
+    [self addChildViewController:_tvc];
+    _tvc.tableView = self.tableView;
+    
+    _tvc.refreshControl = [[UIRefreshControl alloc] init];
+    _tvc.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull To Refresh"];
+    [_tvc.refreshControl addTarget:self action:@selector(refreshTableView) forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -137,179 +146,171 @@
 #pragma mark - TableViewDelegate Methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {    
-    if (posts.count == 0) {
+    if (_posts.count == 0) {
         return 0;
     } else {
         // The extra row is for the "Load more" cell
-        return posts.count + 1;
+        return _posts.count + 1;
     }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *LoadMoreCellIdentifier = @"LoadMoreCell";
-    static NSString *CustomCellIdentifier = @"CustomCell";
-    
+    static NSString *LoadCellIdentifier = @"LoadMore";
+    static NSString *NormalCellIdentifier = @"Normal";
+
     CGFloat cellWidth = self.view.bounds.size.width;
     
     UITableViewCell *cell = nil;
     UILabel *titleLabel = nil;
     UILabel *countLabel = nil;
-    NIAttributedLabel *authorLabel = nil;
+    NIAttributedLabel *infoLabel = nil;
     UILabel *tapLabel = nil;
     UILabel *commentIcon = nil;
-    NIAttributedLabel *loadLabel = nil;
+    UILabel *loadMoreLabel = nil;
     
-    // TODO
-    // Fix this ugly code
-    if (indexPath.row == posts.count) {
-        cell = [tableView dequeueReusableCellWithIdentifier:LoadMoreCellIdentifier];
+    if (indexPath.row == _posts.count) {
         
+        cell = [tableView dequeueReusableCellWithIdentifier:LoadCellIdentifier];
         if (cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:LoadMoreCellIdentifier];
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:LoadCellIdentifier];
             
-            loadLabel = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
-            loadLabel.font = [UIFont fontWithName:@"FontAwesome" size:kLoadMoreFontSize];
-            loadLabel.textAlignment = NSTextAlignmentCenter;
-            loadLabel.tag = kLoadLabelTag;
-            [cell.contentView addSubview:loadLabel];
+            loadMoreLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+            loadMoreLabel.font = [UIFont systemFontOfSize:kLoadMoreFontSize];
+            loadMoreLabel.textAlignment = NSTextAlignmentCenter;
+            loadMoreLabel.tag = kLoadMoreLabelTag;
+            [cell.contentView addSubview:loadMoreLabel];
+        } else {
+            loadMoreLabel = (UILabel *)[cell viewWithTag:kLoadMoreLabelTag];
         }
         
-        if (!loadLabel)
-            loadLabel = (NIAttributedLabel *)[cell viewWithTag:kLoadLabelTag];
+        NSString *loadMoreText = @"Load more";
+        CGSize loadMoreSize = [loadMoreText sizeWithFont:[UIFont systemFontOfSize:kLoadMoreFontSize]];
         
-        loadLabel.frame = CGRectMake(0, 10, cellWidth, 50);
-        loadLabel.text = @"Load more \uf08a";
-        [loadLabel setFont:[UIFont fontWithName:@"FontAwesome" size:kLoadMoreFontSize] range:[loadLabel.text rangeOfString:@"\uf08a"]];
+        loadMoreLabel.text = loadMoreText;
+        loadMoreLabel.frame = CGRectMake(cellWidth / 2 - loadMoreSize.width/2, 50/2 - loadMoreSize.height/2, loadMoreSize.width, loadMoreSize.height);
         
         return cell;
+    } else {
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:NormalCellIdentifier];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:NormalCellIdentifier];
+            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+            
+            titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+            titleLabel.font = [UIFont systemFontOfSize:kFontSize];
+            titleLabel.numberOfLines = 0;
+            titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            titleLabel.tag = kTitleLabelTag;
+            titleLabel.userInteractionEnabled = YES;
+            [cell.contentView addSubview:titleLabel];
+            
+            countLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+            countLabel.font = [UIFont systemFontOfSize:kFontSize];
+            countLabel.numberOfLines = 0;
+            countLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            countLabel.tag = kCountLabelTag;
+            [cell.contentView addSubview:countLabel];
+            
+            infoLabel = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
+            infoLabel.font = [UIFont systemFontOfSize:kSmallFontSize];
+            infoLabel.numberOfLines = 0;
+            infoLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            infoLabel.tag = kAuthorLabelTag;
+            [cell.contentView addSubview:infoLabel];
+            
+            tapLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+            tapLabel.font = [UIFont systemFontOfSize:kFontSize];
+            tapLabel.numberOfLines = 0;
+            tapLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            tapLabel.tag = kTapLabelTag;
+            tapLabel.userInteractionEnabled = YES;
+            [cell.contentView addSubview:tapLabel];
+            
+            UILabel *commentIcon = [[UILabel alloc] initWithFrame:CGRectZero];
+            commentIcon.font = [UIFont fontWithName:@"FontAwesome" size:12];
+            commentIcon.numberOfLines = 0;
+            commentIcon.lineBreakMode = NSLineBreakByWordWrapping;
+            commentIcon.tag = kCommentIconTag;
+            [cell.contentView addSubview:commentIcon];
+            
+        } else {
+            commentIcon = (UILabel *)[cell viewWithTag:kCommentIconTag];
+            titleLabel = (UILabel *)[cell viewWithTag:kTitleLabelTag];
+            tapLabel = (UILabel *)[cell viewWithTag:kTapLabelTag];
+            countLabel = (UILabel *)[cell viewWithTag:kCountLabelTag];
+            infoLabel = (NIAttributedLabel *)[cell viewWithTag:kAuthorLabelTag];
+        }
+        
+        // Get Data
+        NSDictionary *dict = [[_posts objectAtIndex:[indexPath row]] objectForKey:@"data"];
+        NSString *count = [[dict objectForKey:@"num_comments"] description];
+        NSString *ups = [[dict objectForKey:@"ups"] description];
+        NSString *domain = [[dict objectForKey:@"domain"] description];
+        NSInteger createdUTC = [[dict objectForKey:@"created_utc"] integerValue];
+        NSString *time = [self elapsedTime:[NSDate dateWithTimeIntervalSince1970:createdUTC]];
+        
+        NSString *temp = [NSString stringWithFormat:@"%@ %@ %@", ups, domain, time];
+        
+        NSString *title = [[dict objectForKey:@"title"] gtm_stringByUnescapingFromHTML];
+        
+        // Size Calculations
+        CGSize authorSize = [temp sizeWithFont:[UIFont systemFontOfSize:kSmallFontSize]];
+        CGSize countSize = [count sizeWithFont:[UIFont systemFontOfSize:kFontSize]];
+        CGSize commentIconSize = [@"\uf0e5" sizeWithFont:[UIFont fontWithName:@"FontAwesome" size:12]];    
+        CGFloat titleWidth = cellWidth - (kMargin * 2) - kHorizontalSpacer - countSize.width;
+        CGSize titleConstraint = CGSizeMake(titleWidth, MAXFLOAT);
+        
+        CGSize titleSize = [title sizeWithFont:[UIFont systemFontOfSize:kFontSize]
+                             constrainedToSize:titleConstraint
+                                 lineBreakMode:NSLineBreakByWordWrapping];
+
+        // Label Configs        
+        [commentIcon setText:@"\uf0e5"];
+        [commentIcon setFrame:CGRectMake(cellWidth - 10 - commentIconSize.width, kMargin, commentIconSize.width, commentIconSize.height)];
+                
+        title = [title gtm_stringByUnescapingFromHTML];
+        [titleLabel setText:title];
+        [titleLabel setFrame:CGRectMake(kMargin, kMargin, titleWidth, titleSize.height)];
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapTitleLabel:)];
+        [titleLabel addGestureRecognizer:tapGesture];
+        
+        [tapLabel setFrame:CGRectMake(kMargin, 0, titleWidth, 10)];
+        UITapGestureRecognizer *tapGesture2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapTitleLabel:)];
+        [tapLabel addGestureRecognizer:tapGesture2];
+        
+        [countLabel setText:count];
+        [countLabel setFrame:CGRectMake(kMargin + titleWidth + kHorizontalSpacer, kMargin + commentIconSize.height, countSize.width, countSize.height)];
+                
+        [infoLabel setText:[NSString stringWithFormat:@"%@ %@ %@", ups, domain, time]];
+        UIColor *upsColor = [UIColor colorWithRed:77.0f/255.0f green:139.0f/255.0f blue:77.0f/255.0f alpha:1];
+        
+        [infoLabel setTextColor:upsColor range:[infoLabel.text rangeOfString:[NSString stringWithFormat:@"%@", ups]]];
+        
+        [infoLabel setFrame:CGRectMake(kMargin, kMargin + titleSize.height + kVerticalSpacer, authorSize.width, authorSize.height)];
     }
-    
-    cell = [tableView dequeueReusableCellWithIdentifier:CustomCellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CustomCellIdentifier];
-        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         
-        titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        titleLabel.font = [UIFont systemFontOfSize:kFontSize];
-        titleLabel.numberOfLines = 0;
-        titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        titleLabel.tag = kTitleLabelTag;
-        titleLabel.userInteractionEnabled = YES;
-        [cell.contentView addSubview:titleLabel];
-        
-        countLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        countLabel.font = [UIFont systemFontOfSize:kFontSize];
-        countLabel.numberOfLines = 0;
-        countLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        countLabel.tag = kCountLabelTag;
-        [cell.contentView addSubview:countLabel];
-        
-        authorLabel = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
-        authorLabel.font = [UIFont systemFontOfSize:kSmallFontSize];
-        authorLabel.numberOfLines = 0;
-        authorLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        authorLabel.tag = kAuthorLabelTag;
-        [cell.contentView addSubview:authorLabel];
-        
-        tapLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        tapLabel.font = [UIFont systemFontOfSize:kFontSize];
-        tapLabel.numberOfLines = 0;
-        tapLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        tapLabel.tag = kTapLabelTag;
-        tapLabel.userInteractionEnabled = YES;
-        [cell.contentView addSubview:tapLabel];
-        
-        UILabel *commentIcon = [[UILabel alloc] initWithFrame:CGRectZero];
-        commentIcon.font = [UIFont fontWithName:@"FontAwesome" size:12];
-        commentIcon.numberOfLines = 0;
-        commentIcon.lineBreakMode = NSLineBreakByWordWrapping;
-        commentIcon.tag = kCommentIconTag;
-        [cell.contentView addSubview:commentIcon];
-        
-    }
-    
-    /* Gets Data */
-    NSDictionary *dict = [[posts objectAtIndex:[indexPath row]] objectForKey:@"data"];
-    NSString *count = [[dict objectForKey:@"num_comments"] description];
-    NSString *author = [[dict objectForKey:@"author"] description];
-    NSString *ups = [[dict objectForKey:@"ups"] description];
-    NSString *domain = [[dict objectForKey:@"domain"] description];
-    NSString *temp = [NSString stringWithFormat:@"%@ %@ %@", author, ups, domain];
-    
-    // Replaces the HTML representation of ampersand with the symbol
-    NSString *title = [[dict objectForKey:@"title"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
-    
-    /* Size Calculations */
-    CGSize authorSize = [temp sizeWithFont:[UIFont systemFontOfSize:kSmallFontSize]];
-    CGSize countSize = [count sizeWithFont:[UIFont systemFontOfSize:kFontSize]];
-    CGSize commentIconSize = [@"\uf0e5" sizeWithFont:[UIFont fontWithName:@"FontAwesome" size:12]];    
-    CGFloat titleWidth = cellWidth - (kMargin * 2) - kHorizontalSpacer - countSize.width;
-    CGSize titleConstraint = CGSizeMake(titleWidth, MAXFLOAT);
-    
-    CGSize titleSize = [title sizeWithFont:[UIFont systemFontOfSize:kFontSize]
-                         constrainedToSize:titleConstraint
-                             lineBreakMode:NSLineBreakByWordWrapping];
-
-    /* Label Configs */
-    if (!commentIcon)
-        commentIcon = (UILabel *)[cell viewWithTag:kCommentIconTag];
-    
-    [commentIcon setText:@"\uf0e5"];
-    [commentIcon setFrame:CGRectMake(cellWidth - 10 - commentIconSize.width, kMargin, commentIconSize.width, commentIconSize.height)];
-    
-    if (!titleLabel)
-        titleLabel = (UILabel *)[cell viewWithTag:kTitleLabelTag];
-    
-    title = [title gtm_stringByUnescapingFromHTML];
-    [titleLabel setText:title];
-    [titleLabel setFrame:CGRectMake(kMargin, kMargin, titleWidth, titleSize.height)];
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapTitleLabel:)];
-    [titleLabel addGestureRecognizer:tapGesture];
-    
-    if (!tapLabel)
-        tapLabel = (UILabel *)[cell viewWithTag:kTapLabelTag];
-    [tapLabel setFrame:CGRectMake(kMargin, 0, titleWidth, 10)];
-    UITapGestureRecognizer *tapGesture2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapTitleLabel:)];
-    [tapLabel addGestureRecognizer:tapGesture2];
-    
-    if (!countLabel)
-        countLabel = (UILabel *)[cell viewWithTag:kCountLabelTag];
-
-    [countLabel setText:count];
-    [countLabel setFrame:CGRectMake(kMargin + titleWidth + kHorizontalSpacer, kMargin + commentIconSize.height, countSize.width, countSize.height)];
-    
-    if (!authorLabel)
-        authorLabel = (NIAttributedLabel *)[cell viewWithTag:kAuthorLabelTag];
-    
-    [authorLabel setText:[NSString stringWithFormat:@"%@ %@ %@", author, ups, domain]];
-    UIColor *upsColor = [UIColor colorWithRed:77.0f/255.0f green:139.0f/255.0f blue:77.0f/255.0f alpha:1];
-//    UIColor *redColorILiked = [UIColor colorWithRed:191.0f/255.0f green:75.0f/255.0f blue:49.0f/255.0f alpha:1];
-    UIColor *authorColor = [UIColor colorWithRed:76.0f/255.0f green:112.0f/255.0f blue:163.0f/255.0f alpha:1];
-
-    [authorLabel setTextColor:upsColor range:[authorLabel.text rangeOfString:[NSString stringWithFormat:@"%@", ups]]];
-    [authorLabel setTextColor:authorColor range:[authorLabel.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
-    [authorLabel setFrame:CGRectMake(kMargin, kMargin + titleSize.height + kVerticalSpacer, authorSize.width, authorSize.height)];
-    
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == posts.count) {
-        NSString *postName = [[[posts lastObject] objectForKey:@"data"] objectForKey:@"name"];
+    if (indexPath.row == _posts.count) {
+        NSString *postName = [[[_posts lastObject] objectForKey:@"data"] objectForKey:@"name"];
         RedditWrapper *model = [[RedditWrapper alloc] init];
         [model redditJSON:[[Share sharedInstance] redditName] withPostName:postName withLimit:25];
         [model setDelegate:self];
     } else {
-        NSDictionary *dict = [posts objectAtIndex:indexPath.row];
+        NSDictionary *dict = [_posts objectAtIndex:indexPath.row];
         dict = [dict objectForKey:@"data"];
         
         // Set Share Singleton properties to be used in the CommentViewController
-        [[Share sharedInstance] setSelftext:[[dict objectForKey:@"selftext"] gtm_stringByUnescapingFromHTML]];
+        [[Share sharedInstance] setSelfText:[[dict objectForKey:@"selftext"] gtm_stringByUnescapingFromHTML]];
         [[Share sharedInstance] setPermalink:[dict objectForKey:@"permalink"]];
-        [[Share sharedInstance] setTitle:[dict objectForKey:@"title"]];
+        [[Share sharedInstance] setTitle:[[dict objectForKey:@"title"] gtm_stringByUnescapingFromHTML]];
         [[Share sharedInstance] setAuthor:[dict objectForKey:@"author"]];
+        [[Share sharedInstance] setTime:[dict objectForKey:@"created_utc"]];
         
         CommentViewController *postController = [[CommentViewController alloc] init];
         [self.navigationController pushViewController:postController animated:YES];
@@ -320,23 +321,25 @@
 {
     CGFloat cellWidth = self.view.bounds.size.width;
     
-    if (indexPath.row == posts.count) {
+    if (indexPath.row == _posts.count) {
         // Height for the "Load more" cell
         return 50;
     } else {
-        /* Gets Data */
-        NSDictionary *dict = [[posts objectAtIndex:[indexPath row]] objectForKey:@"data"];
+        // Get Data
+        NSDictionary *dict = [[_posts objectAtIndex:[indexPath row]] objectForKey:@"data"];
         NSString *title = [[dict objectForKey:@"title"] description];
         title = [title gtm_stringByUnescapingFromHTML];
         
         NSString *count = [[dict objectForKey:@"num_comments"] description];
-        NSString *author = [[dict objectForKey:@"author"] description];
         NSString *ups = [[dict objectForKey:@"ups"] description];
         NSString *domain = [[dict objectForKey:@"domain"] description];
-        NSString *temp = [NSString stringWithFormat:@"%@ %@ %@", author, ups, domain];
+        NSInteger createdUTC = [[dict objectForKey:@"created_utc"] integerValue];
+        NSString *elapsedTime = [self elapsedTime:[NSDate dateWithTimeIntervalSince1970:createdUTC]];
         
-        /* Height Calculations */
-        CGSize authorSize = [temp sizeWithFont:[UIFont systemFontOfSize:kSmallFontSize]];
+        NSString *temp = [NSString stringWithFormat:@"%@ %@ %@", ups, domain, elapsedTime];
+        
+        // Height Calculations
+        CGSize infoSize = [temp sizeWithFont:[UIFont systemFontOfSize:kSmallFontSize]];
         
         // Gets the width of count string
         CGSize countSize = [count sizeWithFont:[UIFont systemFontOfSize:kFontSize]];
@@ -348,7 +351,7 @@
                              constrainedToSize:titleConstraint
                                  lineBreakMode:NSLineBreakByWordWrapping];
         
-        return titleSize.height + authorSize.height + (kMargin * 2) + kVerticalSpacer;
+        return titleSize.height + infoSize.height + (kMargin * 2) + kVerticalSpacer;
     }
 }
 
@@ -366,13 +369,15 @@
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     [self.indicator hide];
     
+    [_tvc.refreshControl endRefreshing];
+    
     if (JSON) {
-        if (posts.count > 0) {
+        if (_posts.count > 0) {
 //            NSLog(@"Load more tapped");
-            [posts addObjectsFromArray:[[JSON objectForKey:@"data"] objectForKey:@"children"]];
+            [_posts addObjectsFromArray:[[JSON objectForKey:@"data"] objectForKey:@"children"]];
         }
-        if (posts.count == 0) {
-            posts = [[JSON objectForKey:@"data"] objectForKey:@"children"];
+        if (_posts.count == 0) {
+            _posts = [[JSON objectForKey:@"data"] objectForKey:@"children"];
         }
     }
         
@@ -393,7 +398,7 @@
 - (void)selectedReddit:(NSString *)name
 {    
     // Clear out the posts array
-    posts = nil;
+    _posts = nil;
         
     RedditWrapper *model = [[RedditWrapper alloc] init];
     [model redditJSONUsingName:name];
@@ -422,7 +427,7 @@
 
 - (void)showLinkWithRow:(NSInteger)row
 {
-    NSDictionary *post = [[posts objectAtIndex:row] objectForKey:@"data"];
+    NSDictionary *post = [[_posts objectAtIndex:row] objectForKey:@"data"];
     
     NSString *url = [post objectForKey:@"url"];
     
@@ -498,6 +503,59 @@
         
         [self tableView:self.tableView didSelectRowAtIndexPath:swipeIndexPath];
     }
+}
+
+#pragma mark -
+- (void)refreshTableView
+{    
+    _posts = nil;
+
+    [_tvc.refreshControl beginRefreshing];
+    RedditWrapper *wrapper = [[RedditWrapper alloc] init];
+    [wrapper redditJSONUsingName:[[Share sharedInstance] redditName]];
+    wrapper.delegate = self;
+}
+
+- (NSString *)elapsedTime:(NSDate *)created
+{
+    NSInteger time;
+    NSString *timeString;
+    
+    //    NSLog(@"Start %@", created.description);
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    formatter.dateFormat = @"yyyy-MM-dd HH:mm:ss z";
+    formatter.timeZone = [NSTimeZone systemTimeZone];
+    NSString *createdlocal = [formatter stringFromDate:created];
+    //    NSLog(@"Converted %@", createdlocal);
+    
+    NSDate *now = [NSDate date];
+    NSString *nowLocal = [formatter stringFromDate:now];
+    //    NSLog(@"Current %@", nowLocal);
+    
+    NSTimeInterval timeBetweenDates = [now timeIntervalSinceDate:created];
+    
+    //    NSLog(@"Seconds %f", timeBetweenDates);
+    double secondsInAnHour = 3600;
+    double minutesInAnHour = 60;
+    time = timeBetweenDates / secondsInAnHour;
+    
+    //    NSLog(@"Hours elapsed %d", time);
+    
+    timeString = [NSString stringWithFormat:@"%dh", time];
+    if (time == 0) {
+        time = timeBetweenDates / minutesInAnHour;
+        timeString = [NSString stringWithFormat:@"%dm", time];
+        
+        if (time == 0) {
+            time = timeBetweenDates;
+            timeString = [NSString stringWithFormat:@"%ds", time];
+            
+        }
+        
+    }
+    
+    return [NSString stringWithFormat:@"%@ ago", timeString];
 }
 
 @end

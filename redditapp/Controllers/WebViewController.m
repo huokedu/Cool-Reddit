@@ -58,7 +58,6 @@
     [super viewWillAppear:animated];
     
     self.navigationController.toolbarHidden = NO;
-//    [self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"nav"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
     
     // Create a UIWebView and set it to the webView property
     self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];

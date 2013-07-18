@@ -35,7 +35,8 @@
 {
 
     NSMutableURLRequest *_request = [NSMutableURLRequest requestWithURL:url];
-    NSDictionary *_headers = [NSDictionary dictionaryWithObjectsAndKeys:@"application/json", @"accept", nil];
+    NSDictionary *_headers = @{ @"accept": @"application/json" };
+    
     [_request setAllHTTPHeaderFields:_headers];
 
     [NSURLConnection sendAsynchronousRequest:_request

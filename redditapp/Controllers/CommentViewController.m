@@ -25,20 +25,21 @@
 
 #define kCommentLabelTag 1
 #define kAuthorLabelForCommentCellTag 2
-#define kSelftextLabelTag 3
+#define kSelfTextLabelTag 3
 #define kTitleLabelTag 4
 #define kAuthorLabelForFirstCellTag 5
+#define kTimeLabelTag 6
 
 @interface CommentViewController ()
 {
-    NSMutableArray *holder;
+    NSMutableArray *_holder;
+    UITableViewController *_tvc;
+    
 }
 @property (nonatomic, strong) Indicator *indicator;
 @end
 
 @implementation CommentViewController
-@synthesize tableView = _tableView;
-@synthesize indicator = _indicator;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -69,6 +70,14 @@
     [self.tableView addGestureRecognizer:gestureRecognizer];
     
     [self showComments];
+    
+    _tvc = [[UITableViewController alloc] initWithStyle:self.tableView.style];
+    [self addChildViewController:_tvc];
+    _tvc.tableView = self.tableView;
+    
+    _tvc.refreshControl = [[UIRefreshControl alloc] init];
+    _tvc.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull To Refresh"];
+    [_tvc.refreshControl addTarget:self action:@selector(refreshTableView) forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -118,9 +127,13 @@
     
     NSArray *comments = [[commentTree objectForKey:@"data"] objectForKey:@"children"];
     
-    holder = [NSMutableArray array];
+    _holder = [NSMutableArray array];
     for (NSDictionary *testDict in comments) {
         [self build:testDict indent:0];
+    }
+    
+    if (_tvc.refreshControl.isRefreshing) {
+        [_tvc.refreshControl endRefreshing];
     }
     
     [self.tableView reloadData];
@@ -139,7 +152,7 @@
         NSDictionary *commentJSON = [jsonDict objectForKey:@"data"];
         // There's always a body
         if ([commentJSON objectForKey:@"body"]) {
-            [holder addObject:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:indent], @"indent", [[commentJSON objectForKey:@"body"] description], @"comment", [[commentJSON objectForKey:@"author"] description], @"author", nil]];
+            [_holder addObject:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:indent], @"indent", [[commentJSON objectForKey:@"body"] description], @"comment", [[commentJSON objectForKey:@"author"] description], @"author", [commentJSON objectForKey:@"created_utc"], @"created_utc", nil]];
             indent = indent + 1;
             
             if (![[[commentJSON objectForKey:@"replies"] description] isEqualToString:@""]) {
@@ -179,56 +192,40 @@
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section
 {
-    return holder.count + 1;
+    return _holder.count + 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    static NSString *FirstCellIdentifier = @"FirstCell";
+    static NSString *CommentCellIdentifier = @"CommentCell";
+    
+    UITableViewCell *cell = nil;
     NIAttributedLabel *commentLabel = nil;
     NIAttributedLabel *authorLabelForFirstCell = nil;
     NIAttributedLabel *authorLabelForCommentCell = nil;
-    NIAttributedLabel *selftextLabel = nil;
+    NIAttributedLabel *selfTextLabel = nil;
     NIAttributedLabel *titleLabel = nil;
+    UILabel *timeLabel = nil;
     
     CGFloat cellWidth = self.view.bounds.size.width;
     
-    NSString *cellIdentifier = @"CommentCell";
     if (indexPath.row == 0) {
-        cellIdentifier = @"FirstCell";
-    }
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-        
-        if ([cellIdentifier isEqualToString:@"CommentCell"]) {
-            commentLabel = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
-            commentLabel.font = [UIFont systemFontOfSize:kFontSize];
-            commentLabel.numberOfLines = 0;
-            commentLabel.lineBreakMode = NSLineBreakByWordWrapping;
-            commentLabel.tag = kCommentLabelTag;
-            commentLabel.autoDetectLinks = YES;
-            commentLabel.deferLinkDetection = YES;
-            commentLabel.delegate = self;
-            [cell.contentView addSubview:commentLabel];
+        cell = [tableView dequeueReusableCellWithIdentifier:FirstCellIdentifier];
+
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FirstCellIdentifier];
+            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
             
-            authorLabelForCommentCell = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
-            authorLabelForCommentCell.font = [UIFont systemFontOfSize:kAuthorFontSize];
-            authorLabelForCommentCell.numberOfLines = 0;
-            authorLabelForCommentCell.lineBreakMode = NSLineBreakByWordWrapping;
-            authorLabelForCommentCell.tag = kAuthorLabelForCommentCellTag;
-            [cell.contentView addSubview:authorLabelForCommentCell];
-        } else {
-            selftextLabel = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
-            selftextLabel.font = [UIFont systemFontOfSize:kFontSize];
-            selftextLabel.numberOfLines = 0;
-            selftextLabel.lineBreakMode = NSLineBreakByWordWrapping;
-            selftextLabel.tag = kSelftextLabelTag;
-            selftextLabel.autoDetectLinks = YES;
-            selftextLabel.delegate = self;
-            [cell.contentView addSubview:selftextLabel];
+            selfTextLabel = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
+            selfTextLabel.font = [UIFont systemFontOfSize:kFontSize];
+            selfTextLabel.numberOfLines = 0;
+            selfTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            selfTextLabel.tag = kSelfTextLabelTag;
+            selfTextLabel.autoDetectLinks = YES;
+            selfTextLabel.delegate = self;
+            [cell.contentView addSubview:selfTextLabel];
             
             titleLabel = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
             titleLabel.font = [UIFont boldSystemFontOfSize:kTitleFontSize];
@@ -246,25 +243,37 @@
             authorLabelForFirstCell.tag = kAuthorLabelForFirstCellTag;
             [cell.contentView addSubview:authorLabelForFirstCell];
             
-        }
+            timeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+            timeLabel.font = [UIFont systemFontOfSize:kAuthorFontSize];
+            timeLabel.numberOfLines = 0;
+            timeLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            timeLabel.tag = kTimeLabelTag;
+            [cell.contentView addSubview:timeLabel];
+        } else {
+            titleLabel = (NIAttributedLabel *)[cell viewWithTag:kTitleLabelTag];
+            authorLabelForFirstCell = (NIAttributedLabel *)[cell viewWithTag:kAuthorLabelForFirstCellTag];
+            selfTextLabel = (NIAttributedLabel *)[cell viewWithTag:kSelfTextLabelTag];
+            timeLabel = (UILabel *)[cell viewWithTag:kTimeLabelTag];
 
-    }
-    
-    if ([cellIdentifier isEqualToString:@"FirstCell"]) {
+        }
         
-        /* Get Data */
+        // Get Data
         NSString *title = [[Share sharedInstance] title];
-        NSString *selftext = [[Share sharedInstance] selftext];
-        selftext = [selftext stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString *selfText = [[Share sharedInstance] selfText];
+        selfText = [selfText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         NSString *author = [NSString stringWithFormat:@"%@", [[Share sharedInstance] author]];
         
+        NSInteger createdUTC = [[[Share sharedInstance] time] integerValue];
+        NSString *time = [self elapsedTime:[NSDate dateWithTimeIntervalSince1970:createdUTC]];
         
-        /* Size Calculations */
+        // Size Calculations
+        CGSize timeSize = [time sizeWithFont:[UIFont systemFontOfSize:kAuthorFontSize]];
+        
         CGSize cellConstraint = CGSizeMake(cellWidth - (kMargin * 2), MAXFLOAT);
         CGSize titleSize = [title sizeWithFont:[UIFont boldSystemFontOfSize:kTitleFontSize]
                              constrainedToSize:cellConstraint
                                  lineBreakMode:NSLineBreakByWordWrapping];
-        CGSize selftextSize = [selftext sizeWithFont:[UIFont systemFontOfSize:kFontSize]
+        CGSize selftextSize = [selfText sizeWithFont:[UIFont systemFontOfSize:kFontSize]
                                    constrainedToSize:cellConstraint
                                        lineBreakMode:NSLineBreakByWordWrapping];
         
@@ -272,75 +281,112 @@
                                constrainedToSize:cellConstraint
                                    lineBreakMode:NSLineBreakByWordWrapping];
         
-        /* Additional Label Configs */
-        if (!titleLabel)
-            titleLabel = (NIAttributedLabel *)[cell viewWithTag:kTitleLabelTag];
+        // Additional Label Configs
         [titleLabel setText:title];
         [titleLabel setFont:[UIFont boldSystemFontOfSize:kTitleFontSize]];
         [titleLabel setFrame:CGRectMake(kMargin, kMargin + authorSize.height + 1, titleSize.width, titleSize.height)];
         
-        if (!authorLabelForFirstCell)
-            authorLabelForFirstCell = (NIAttributedLabel *)[cell viewWithTag:kAuthorLabelForFirstCellTag];
         [authorLabelForFirstCell setText:author];
         UIColor *authorColor = [UIColor colorWithRed:231.0f/255.0f green:76.0f/255.0f blue:60.0f/255.0f alpha:1];
-
+        
         [authorLabelForFirstCell setTextColor:authorColor range:[authorLabelForFirstCell.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
         [authorLabelForFirstCell setFont:[UIFont systemFontOfSize:kMainAuthorFont]];
         [authorLabelForFirstCell setFrame:CGRectMake(kMargin, kMargin, authorSize.width, authorSize.height)];
         
-        if (!selftextLabel)
-            selftextLabel = (NIAttributedLabel *)[cell viewWithTag:kSelftextLabelTag];
-        [selftextLabel setText:selftext];
-        [selftextLabel setFrame:CGRectMake(kMargin, kMargin + authorSize.height + titleSize.height + 2, selftextSize.width, selftextSize.height)];
+        [selfTextLabel setText:selfText];
+        [selfTextLabel setFrame:CGRectMake(kMargin, kMargin + authorSize.height + titleSize.height + 2, selftextSize.width, selftextSize.height)];
+        
+        [timeLabel setText:time];
+        [timeLabel setFrame:CGRectMake(kMargin + authorSize.width + 2, kMargin, timeSize.width, timeSize.height)];
         
         return cell;
-    }
-
-    NSInteger indexLessOne = indexPath.row - 1;
-    
-    /* Get Data */
-    NSDictionary *dict = [holder objectAtIndex:indexLessOne];
-    NSString *comment = [[dict objectForKey:@"comment"] description];
-    comment = [comment stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    comment = [comment gtm_stringByUnescapingFromHTML];
-    
-    NSInteger indentLevel = [[dict objectForKey:@"indent"] integerValue];
-    NSString *author = [[dict objectForKey:@"author"] description];
-    
-    /* Size Calculations */
-    CGFloat indentCellWidth = [self widthWithIndent:indentLevel width:cellWidth];
-    
-    CGSize authorContraint = CGSizeMake(indentCellWidth - (kMargin * 2), MAXFLOAT);
-    CGSize authorSize = [author sizeWithFont:[UIFont systemFontOfSize:kAuthorFontSize]
-                           constrainedToSize:authorContraint
-                               lineBreakMode:NSLineBreakByWordWrapping];
-    
-    CGSize commentConstraint = CGSizeMake(indentCellWidth - (kMargin * 2), MAXFLOAT);
-    CGSize commentSize = [comment sizeWithFont:[UIFont systemFontOfSize:kFontSize]
-                             constrainedToSize:commentConstraint
-                                 lineBreakMode:NSLineBreakByWordWrapping];
-    
-    /* Additional Label Configs */
-    if (!authorLabelForCommentCell)
-        authorLabelForCommentCell = (NIAttributedLabel *)[cell viewWithTag:kAuthorLabelForCommentCellTag];
-    
-    [authorLabelForCommentCell setText:author];
-    [authorLabelForCommentCell setFrame:CGRectMake(kMargin + (kIndent * indentLevel), kMargin, authorSize.width, authorSize.height)];
-
-    if ([author isEqualToString:[[Share sharedInstance] author]]) {
-        UIColor *authorColor = [UIColor colorWithRed:231.0f/255.0f green:76.0f/255.0f blue:60.0f/255.0f alpha:1];
-
-        [authorLabelForCommentCell setTextColor:authorColor range:[authorLabelForCommentCell.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
+        
     } else {
-        UIColor *authorColor = [UIColor colorWithRed:76.0f/255.0f green:112.0f/255.0f blue:163.0f/255.0f alpha:1];
-        [authorLabelForCommentCell setTextColor:authorColor range:[authorLabelForCommentCell.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
+    
+        cell = [tableView dequeueReusableCellWithIdentifier:CommentCellIdentifier];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CommentCellIdentifier];
+            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+            
+            commentLabel = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
+            commentLabel.font = [UIFont systemFontOfSize:kFontSize];
+            commentLabel.numberOfLines = 0;
+            commentLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            commentLabel.tag = kCommentLabelTag;
+            commentLabel.autoDetectLinks = YES;
+            commentLabel.deferLinkDetection = YES;
+            commentLabel.delegate = self;
+            [cell.contentView addSubview:commentLabel];
+            
+            authorLabelForCommentCell = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
+            authorLabelForCommentCell.font = [UIFont systemFontOfSize:kAuthorFontSize];
+            authorLabelForCommentCell.numberOfLines = 0;
+            authorLabelForCommentCell.lineBreakMode = NSLineBreakByWordWrapping;
+            authorLabelForCommentCell.tag = kAuthorLabelForCommentCellTag;
+            [cell.contentView addSubview:authorLabelForCommentCell];
+            
+            timeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+            timeLabel.font = [UIFont systemFontOfSize:kAuthorFontSize];
+            timeLabel.numberOfLines = 0;
+            timeLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            timeLabel.tag = kTimeLabelTag;
+            [cell.contentView addSubview:timeLabel];
+
+        } else {
+            authorLabelForCommentCell = (NIAttributedLabel *)[cell viewWithTag:kAuthorLabelForCommentCellTag];
+            commentLabel = (NIAttributedLabel *)[cell viewWithTag:kCommentLabelTag];
+            timeLabel = (UILabel *)[cell viewWithTag:kTimeLabelTag];
+
+        }
+
+        NSInteger indexLessOne = indexPath.row - 1;
+        
+        // Get Data
+        NSDictionary *dict = [_holder objectAtIndex:indexLessOne];
+        NSString *comment = [[dict objectForKey:@"comment"] description];
+        comment = [comment stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        comment = [comment gtm_stringByUnescapingFromHTML];
+        
+        NSInteger createdUTC = [[dict objectForKey:@"created_utc"] integerValue];
+        NSString *time = [self elapsedTime:[NSDate dateWithTimeIntervalSince1970:createdUTC]];
+        
+        NSInteger indentLevel = [[dict objectForKey:@"indent"] integerValue];
+        NSString *author = [[dict objectForKey:@"author"] description];
+        
+        // Size Calculations
+        CGSize timeSize = [time sizeWithFont:[UIFont systemFontOfSize:kAuthorFontSize]];
+        
+        CGFloat indentCellWidth = [self widthWithIndent:indentLevel width:cellWidth];
+        
+        CGSize authorContraint = CGSizeMake(indentCellWidth - (kMargin * 2), MAXFLOAT);
+        CGSize authorSize = [author sizeWithFont:[UIFont systemFontOfSize:kAuthorFontSize]
+                               constrainedToSize:authorContraint
+                                   lineBreakMode:NSLineBreakByWordWrapping];
+        
+        CGSize commentConstraint = CGSizeMake(indentCellWidth - (kMargin * 2), MAXFLOAT);
+        CGSize commentSize = [comment sizeWithFont:[UIFont systemFontOfSize:kFontSize]
+                                 constrainedToSize:commentConstraint
+                                     lineBreakMode:NSLineBreakByWordWrapping];
+        
+        // Additional Label Configs        
+        [authorLabelForCommentCell setText:author];
+        [authorLabelForCommentCell setFrame:CGRectMake(kMargin + (kIndent * indentLevel), kMargin, authorSize.width, authorSize.height)];
+
+        if ([author isEqualToString:[[Share sharedInstance] author]]) {
+            UIColor *authorColor = [UIColor colorWithRed:231.0f/255.0f green:76.0f/255.0f blue:60.0f/255.0f alpha:1];
+
+            [authorLabelForCommentCell setTextColor:authorColor range:[authorLabelForCommentCell.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
+        } else {
+            UIColor *authorColor = [UIColor colorWithRed:76.0f/255.0f green:112.0f/255.0f blue:163.0f/255.0f alpha:1];
+            [authorLabelForCommentCell setTextColor:authorColor range:[authorLabelForCommentCell.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
+        }
+                
+        [commentLabel setText:comment];
+        [commentLabel setFrame:CGRectMake(kMargin + (kIndent * indentLevel), kMargin + authorSize.height, commentSize.width, commentSize.height)];
+        
+        [timeLabel setText:time];
+        [timeLabel setFrame:CGRectMake(kMargin + (kIndent * indentLevel) + authorSize.width + 2, kMargin, timeSize.width, timeSize.height)];
     }
-    
-    if (!commentLabel)
-        commentLabel = (NIAttributedLabel *)[cell viewWithTag:kCommentLabelTag];
-    
-    [commentLabel setText:comment];
-    [commentLabel setFrame:CGRectMake(kMargin + (kIndent * indentLevel), kMargin + authorSize.height, commentSize.width, commentSize.height)];
     
     return cell;
 }
@@ -352,13 +398,13 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     
     if ([indexPath row] == 0) {
         
-        /* Get Data */
+        // Get Data
         NSString *title = [[Share sharedInstance] title];
-        NSString *selftext = [[Share sharedInstance] selftext];
-        selftext = [selftext stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString *selfText = [[Share sharedInstance] selfText];
+        selfText = [selfText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         NSString *author = [NSString stringWithFormat:@"%@", [[Share sharedInstance] author]];
         
-        /* Height Calculations */
+        // Height Calculations
         CGSize cellConstraint = CGSizeMake(cellWidth - (kMargin * 2), MAXFLOAT);
         CGFloat titleHeight = [title sizeWithFont:[UIFont boldSystemFontOfSize:kTitleFontSize]
                                 constrainedToSize:cellConstraint
@@ -368,40 +414,40 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
                                   constrainedToSize:cellConstraint
                                       lineBreakMode:NSLineBreakByWordWrapping].height;
         
-        CGFloat selftextHeight = [selftext sizeWithFont:[UIFont systemFontOfSize:kFontSize]
+        CGFloat selftextHeight = [selfText sizeWithFont:[UIFont systemFontOfSize:kFontSize]
                                       constrainedToSize:cellConstraint
                                           lineBreakMode:NSLineBreakByWordWrapping].height;
         
         return selftextHeight + authorHeight + titleHeight + (kMargin * 2) + 2;
+    } else {
+        
+        NSInteger indexLessOne = indexPath.row - 1;
+
+        // Get Data
+        NSDictionary *dict = [_holder objectAtIndex:indexLessOne];
+        NSString *comment = [[dict objectForKey:@"comment"] description];
+        comment = [comment stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        comment = [comment gtm_stringByUnescapingFromHTML];
+        
+        NSString *author = [[dict objectForKey:@"author"] description];
+        NSInteger indentLevel = [[dict objectForKey:@"indent"] integerValue];
+            
+        // Height Calculations
+        CGFloat indentCellWidth = [self widthWithIndent:indentLevel width:cellWidth];
+        
+        // The constraint is the cell width minus the indent level minus the left and right margins
+        CGSize cellConstaint = CGSizeMake(indentCellWidth - (kMargin * 2), MAXFLOAT);
+     
+        CGFloat authorHeight = [author sizeWithFont:[UIFont systemFontOfSize:kAuthorFontSize]
+                                  constrainedToSize:cellConstaint
+                                      lineBreakMode:NSLineBreakByWordWrapping].height;
+        
+        CGFloat commentHeight = [comment sizeWithFont:[UIFont systemFontOfSize:kFontSize]
+                                    constrainedToSize:cellConstaint
+                                        lineBreakMode:NSLineBreakByWordWrapping].height;
+            
+        return commentHeight + authorHeight + (kMargin * 2);
     }
-    
-    NSInteger indexLessOne = indexPath.row - 1;
-
-    /* Get Data */
-    NSDictionary *dict = [holder objectAtIndex:indexLessOne];
-    NSString *comment = [[dict objectForKey:@"comment"] description];
-    comment = [comment stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    comment = [comment gtm_stringByUnescapingFromHTML];
-    
-    NSString *author = [[dict objectForKey:@"author"] description];
-    NSInteger indentLevel = [[dict objectForKey:@"indent"] integerValue];
-        
-    /* Height Calculations */
-    CGFloat indentCellWidth = [self widthWithIndent:indentLevel width:cellWidth];
-    
-    // The constraint is the cell width minus the indent level minus the left and right margins
-    CGSize cellConstaint = CGSizeMake(indentCellWidth - (kMargin * 2), MAXFLOAT);
- 
-    CGFloat authorHeight = [author sizeWithFont:[UIFont systemFontOfSize:kAuthorFontSize]
-                              constrainedToSize:cellConstaint
-                                  lineBreakMode:NSLineBreakByWordWrapping].height;
-    
-    CGFloat commentHeight = [comment sizeWithFont:[UIFont systemFontOfSize:kFontSize]
-                                constrainedToSize:cellConstaint
-                                    lineBreakMode:NSLineBreakByWordWrapping].height;
-        
-    return commentHeight + authorHeight + (kMargin * 2);
-
 }
 
 #pragma mark - UITableView Helper Method
@@ -451,6 +497,55 @@ didSelectTextCheckingResult:(NSTextCheckingResult *)result atPoint:(CGPoint)poin
 - (void)didTapBackButton
 {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (NSString *)elapsedTime:(NSDate *)created
+{
+    NSInteger time;
+    NSString *timeString;
+    
+//    NSLog(@"Start %@", created.description);
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    formatter.dateFormat = @"yyyy-MM-dd HH:mm:ss z";
+    formatter.timeZone = [NSTimeZone systemTimeZone];
+    NSString *createdlocal = [formatter stringFromDate:created];
+//    NSLog(@"Converted %@", createdlocal);
+    
+    NSDate *now = [NSDate date];
+    NSString *nowLocal = [formatter stringFromDate:now];
+//    NSLog(@"Current %@", nowLocal);
+    
+    NSTimeInterval timeBetweenDates = [now timeIntervalSinceDate:created];
+    
+//    NSLog(@"Seconds %f", timeBetweenDates);
+    double secondsInAnHour = 3600;
+    double minutesInAnHour = 60;
+    time = timeBetweenDates / secondsInAnHour;
+    
+//    NSLog(@"Hours elapsed %d", time);
+    
+    timeString = [NSString stringWithFormat:@"%dh", time];
+    if (time == 0) {
+        time = timeBetweenDates / minutesInAnHour;
+        timeString = [NSString stringWithFormat:@"%dm", time];
+        
+        if (time == 0) {
+            time = timeBetweenDates;
+            timeString = [NSString stringWithFormat:@"%ds", time];
+            
+        }
+        
+    }
+    
+    return [NSString stringWithFormat:@"%@ ago", timeString];
+}
+
+- (void)refreshTableView
+{
+    RedditWrapper *wrapper = [[RedditWrapper alloc] init];
+    wrapper.delegate = self;
+    [wrapper commentsJSONUsingPermalink:[[Share sharedInstance] permalink]];
 }
 
 @end
