@@ -18,16 +18,12 @@
 @end
 
 @interface RedditWrapper : NSObject
-{
-    __weak id <RedditWrapperDelegate> delegate;
-}
 
 @property (nonatomic, weak) id <RedditWrapperDelegate> delegate;
 
 - (void)commentsJSONUsingPermalink:(NSString *)link;
 - (void)redditJSONUsingName:(NSString *)name;
 - (void)redditJSON:(NSString *)redditName withPostName:(NSString *)postName withLimit:(NSInteger)limit;
-
 
 //- (void)commentsFromPermalink:(NSString *)link completion:(void (^)(BOOL hasComments, NSDictionary *commentsDict, NSError *error)) block;
 @end

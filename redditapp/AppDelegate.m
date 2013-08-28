@@ -22,10 +22,10 @@
     NSManagedObjectContext *context = [self managedObjectContext];
     
     RedditViewController *redditController = [[RedditViewController alloc] init];
-    [redditController setManagedObjectContext:context];
+    redditController.managedObjectContext = context;
     
     UINavigationController *navController = [[UINavigationController alloc] init];
-    [navController setViewControllers:[NSArray arrayWithObject:redditController]];
+    navController.viewControllers = @[redditController];
     
     [navController.navigationBar setBackgroundImage:[UIImage imageNamed:@"nav"] forBarMetrics:UIBarMetricsDefault];
     
@@ -38,7 +38,7 @@
                                                       forState:UIControlStateNormal
                                                     barMetrics:UIBarMetricsLandscapePhone];
     
-    [self.window setRootViewController:navController];
+    self.window.rootViewController = navController;
     
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];

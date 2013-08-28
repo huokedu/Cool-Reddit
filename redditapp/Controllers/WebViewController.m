@@ -18,8 +18,7 @@
 @end
 
 @implementation WebViewController
-@synthesize webView = _webView;
-@synthesize indicator = _indicator;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -34,7 +33,6 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
 
-    self.indicator = [[Indicator alloc] init];
     [self.view addSubview:self.indicator];
     
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(didTapBackButton)];
@@ -48,9 +46,7 @@
 
     NSArray *buttonArray = [NSArray arrayWithObjects:flexibleSpace, backButton, flexibleSpace, forwardButton, flexibleSpace, refreshButton, flexibleSpace, nil];
     
-    [self setToolbarItems:buttonArray];
-
-    
+    self.toolbarItems = buttonArray;    
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -96,6 +92,16 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Lazy load
+- (Indicator *)indicator
+{
+    if (!_indicator) {
+        _indicator = [[Indicator alloc] init];
+    }
+    
+    return _indicator;
 }
 
 - (void)didTapBackButton

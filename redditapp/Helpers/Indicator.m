@@ -42,7 +42,6 @@
         self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         self.activityIndicator.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
         
-        
         self.frame = CGRectMake(0, 0, self.activityIndicator.frame.size.width + kSpacing, kSpacing + self.activityIndicator.frame.size.height);
         self.activityIndicator.center = CGPointMake(self.frame.size.width/2, kSpacing);
         [self addSubview:self.activityIndicator];

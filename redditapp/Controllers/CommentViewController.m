@@ -32,11 +32,10 @@
 
 @interface CommentViewController ()
 {
-    NSMutableArray *_holder;
     UITableViewController *_tvc;
-    
 }
 @property (nonatomic, strong) Indicator *indicator;
+@property (nonatomic, strong) NSMutableArray *holder;
 @end
 
 @implementation CommentViewController
@@ -54,9 +53,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
     
-    self.indicator = [[Indicator alloc] init];
     [self.view addSubview:self.indicator];
     
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
@@ -80,6 +77,15 @@
     [_tvc.refreshControl addTarget:self action:@selector(refreshTableView) forControlEvents:UIControlEventValueChanged];
 }
 
+- (Indicator *)indicator
+{
+    if (!_indicator) {
+        _indicator = [[Indicator alloc] init];
+    }
+    
+    return _indicator;
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -87,7 +93,8 @@
     [self testInternetConnection];
 }
 
--(void) viewWillDisappear:(BOOL)animated {
+- (void)viewWillDisappear:(BOOL)animated
+{
     [super viewWillDisappear:animated];
     if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
         // Back button was pressed. We know this is true because self is no longer
@@ -102,6 +109,15 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (NSMutableArray *)holder
+{
+    if (!_holder) {
+        _holder = [NSMutableArray array];
+    }
+    
+    return _holder;
 }
 
 // Gets the permalink from the singleton
@@ -123,11 +139,10 @@
 
 - (void)returnedJSON:(id)JSON
 {
-    NSDictionary *commentTree = [JSON objectAtIndex:1];
+    NSDictionary *commentTree = JSON[1];
     
-    NSArray *comments = [[commentTree objectForKey:@"data"] objectForKey:@"children"];
+    NSArray *comments = commentTree[@"data"][@"children"];
     
-    _holder = [NSMutableArray array];
     for (NSDictionary *testDict in comments) {
         [self build:testDict indent:0];
     }
@@ -148,16 +163,23 @@
 - (void)build:(id)jsonDict
        indent:(int)indent
 {
-    if ([jsonDict objectForKey:@"data"]) {
-        NSDictionary *commentJSON = [jsonDict objectForKey:@"data"];
+    if (jsonDict[@"data"]) {
+        NSDictionary *commentJSON = jsonDict[@"data"];
         // There's always a body
-        if ([commentJSON objectForKey:@"body"]) {
-            [_holder addObject:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:indent], @"indent", [[commentJSON objectForKey:@"body"] description], @"comment", [[commentJSON objectForKey:@"author"] description], @"author", [commentJSON objectForKey:@"created_utc"], @"created_utc", nil]];
-            indent = indent + 1;
+        if (commentJSON[@"body"]) {
             
+            [self.holder addObject:@{@"indent": [NSNumber numberWithInt:indent],
+                                    @"comment": commentJSON[@"body"],
+                                    @"author": commentJSON[@"author"],
+                                    @"created_utc": commentJSON[@"created_utc"]}];
+            
+            // Has to be incremented after storing the current comment into the holder array
+            // Increment the indent counter
+            indent++;
+            
+            // Check if there are comments by pulling out the string and comparing it to and empty string
             if (![[[commentJSON objectForKey:@"replies"] description] isEqualToString:@""]) {
-
-                NSArray *childrenArray = [[[commentJSON objectForKey:@"replies"] objectForKey:@"data"] objectForKey:@"children"];
+                NSArray *childrenArray = commentJSON[@"replies"][@"data"][@"children"];
                 if ([childrenArray count]) {
                     for (NSArray *child in childrenArray) {
                         [self build:child indent:indent];
@@ -174,7 +196,6 @@
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     [self.tableView reloadData];
-    
 }
 
 - (void)testInternetConnection
@@ -184,7 +205,6 @@
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection Error" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
     }
-    
 }
 
 #pragma mark - UITableViewDelegate Methods
@@ -192,7 +212,7 @@
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section
 {
-    return _holder.count + 1;
+    return self.holder.count + 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -214,7 +234,7 @@
     if (indexPath.row == 0) {
         cell = [tableView dequeueReusableCellWithIdentifier:FirstCellIdentifier];
 
-        if (cell == nil) {
+        if (!cell) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FirstCellIdentifier];
             [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
             
@@ -254,7 +274,6 @@
             authorLabelForFirstCell = (NIAttributedLabel *)[cell viewWithTag:kAuthorLabelForFirstCellTag];
             selfTextLabel = (NIAttributedLabel *)[cell viewWithTag:kSelfTextLabelTag];
             timeLabel = (UILabel *)[cell viewWithTag:kTimeLabelTag];
-
         }
         
         // Get Data
@@ -282,31 +301,31 @@
                                    lineBreakMode:NSLineBreakByWordWrapping];
         
         // Additional Label Configs
-        [titleLabel setText:title];
-        [titleLabel setFont:[UIFont boldSystemFontOfSize:kTitleFontSize]];
-        [titleLabel setFrame:CGRectMake(kMargin, kMargin + authorSize.height + 1, titleSize.width, titleSize.height)];
+        titleLabel.text = title;
+        titleLabel.font = [UIFont boldSystemFontOfSize:kTitleFontSize];
+        titleLabel.frame = CGRectMake(kMargin, kMargin + authorSize.height + 1, titleSize.width, titleSize.height);
         
-        [authorLabelForFirstCell setText:author];
+        authorLabelForFirstCell.text = author;
         UIColor *authorColor = [UIColor colorWithRed:231.0f/255.0f green:76.0f/255.0f blue:60.0f/255.0f alpha:1];
         
         [authorLabelForFirstCell setTextColor:authorColor range:[authorLabelForFirstCell.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
         [authorLabelForFirstCell setFont:[UIFont systemFontOfSize:kMainAuthorFont]];
         [authorLabelForFirstCell setFrame:CGRectMake(kMargin, kMargin, authorSize.width, authorSize.height)];
         
-        [selfTextLabel setText:selfText];
-        [selfTextLabel setFrame:CGRectMake(kMargin, kMargin + authorSize.height + titleSize.height + 2, selftextSize.width, selftextSize.height)];
+        selfTextLabel.text = selfText;
+        selfTextLabel.frame = CGRectMake(kMargin, kMargin + authorSize.height + titleSize.height + 2, selftextSize.width, selftextSize.height);
         
-        [timeLabel setText:time];
-        [timeLabel setFrame:CGRectMake(kMargin + authorSize.width + 2, kMargin, timeSize.width, timeSize.height)];
+        timeLabel.text = time;
+        timeLabel.frame = CGRectMake(kMargin + authorSize.width + 2, kMargin, timeSize.width, timeSize.height);
         
         return cell;
         
     } else {
     
         cell = [tableView dequeueReusableCellWithIdentifier:CommentCellIdentifier];
-        if (cell == nil) {
+        if (!cell) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CommentCellIdentifier];
-            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             
             commentLabel = [[NIAttributedLabel alloc] initWithFrame:CGRectZero];
             commentLabel.font = [UIFont systemFontOfSize:kFontSize];
@@ -342,16 +361,16 @@
         NSInteger indexLessOne = indexPath.row - 1;
         
         // Get Data
-        NSDictionary *dict = [_holder objectAtIndex:indexLessOne];
-        NSString *comment = [[dict objectForKey:@"comment"] description];
+        NSDictionary *dict = self.holder[indexLessOne];
+        NSString *comment = [dict[@"comment"] description];
         comment = [comment stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         comment = [comment gtm_stringByUnescapingFromHTML];
         
-        NSInteger createdUTC = [[dict objectForKey:@"created_utc"] integerValue];
+        NSInteger createdUTC = [dict[@"created_utc"] integerValue];
         NSString *time = [self elapsedTime:[NSDate dateWithTimeIntervalSince1970:createdUTC]];
         
-        NSInteger indentLevel = [[dict objectForKey:@"indent"] integerValue];
-        NSString *author = [[dict objectForKey:@"author"] description];
+        NSInteger indentLevel = [dict[@"indent"] integerValue];
+        NSString *author = [dict[@"author"] description];
         
         // Size Calculations
         CGSize timeSize = [time sizeWithFont:[UIFont systemFontOfSize:kAuthorFontSize]];
@@ -369,8 +388,8 @@
                                      lineBreakMode:NSLineBreakByWordWrapping];
         
         // Additional Label Configs        
-        [authorLabelForCommentCell setText:author];
-        [authorLabelForCommentCell setFrame:CGRectMake(kMargin + (kIndent * indentLevel), kMargin, authorSize.width, authorSize.height)];
+        authorLabelForCommentCell.text = author;
+        authorLabelForCommentCell.frame = CGRectMake(kMargin + (kIndent * indentLevel), kMargin, authorSize.width, authorSize.height);
 
         if ([author isEqualToString:[[Share sharedInstance] author]]) {
             UIColor *authorColor = [UIColor colorWithRed:231.0f/255.0f green:76.0f/255.0f blue:60.0f/255.0f alpha:1];
@@ -380,12 +399,12 @@
             UIColor *authorColor = [UIColor colorWithRed:76.0f/255.0f green:112.0f/255.0f blue:163.0f/255.0f alpha:1];
             [authorLabelForCommentCell setTextColor:authorColor range:[authorLabelForCommentCell.text rangeOfString:[NSString stringWithFormat:@"%@", author]]];
         }
-                
-        [commentLabel setText:comment];
-        [commentLabel setFrame:CGRectMake(kMargin + (kIndent * indentLevel), kMargin + authorSize.height, commentSize.width, commentSize.height)];
         
-        [timeLabel setText:time];
-        [timeLabel setFrame:CGRectMake(kMargin + (kIndent * indentLevel) + authorSize.width + 2, kMargin, timeSize.width, timeSize.height)];
+        commentLabel.text = comment;
+        commentLabel.frame = CGRectMake(kMargin + (kIndent * indentLevel), kMargin + authorSize.height, commentSize.width, commentSize.height);
+        
+        timeLabel.text = time;
+        timeLabel.frame = CGRectMake(kMargin + (kIndent * indentLevel) + authorSize.width + 2, kMargin, timeSize.width, timeSize.height);
     }
     
     return cell;
@@ -424,13 +443,13 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
         NSInteger indexLessOne = indexPath.row - 1;
 
         // Get Data
-        NSDictionary *dict = [_holder objectAtIndex:indexLessOne];
-        NSString *comment = [[dict objectForKey:@"comment"] description];
+        NSDictionary *dict = [self.holder objectAtIndex:indexLessOne];
+        NSString *comment = [dict[@"comment"] description];
         comment = [comment stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         comment = [comment gtm_stringByUnescapingFromHTML];
         
-        NSString *author = [[dict objectForKey:@"author"] description];
-        NSInteger indentLevel = [[dict objectForKey:@"indent"] integerValue];
+        NSString *author = [dict[@"author"] description];
+        NSInteger indentLevel = [dict[@"indent"] integerValue];
             
         // Height Calculations
         CGFloat indentCellWidth = [self widthWithIndent:indentLevel width:cellWidth];
@@ -491,7 +510,6 @@ didSelectTextCheckingResult:(NSTextCheckingResult *)result atPoint:(CGPoint)poin
     if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
         [self.navigationController popViewControllerAnimated:YES];
     }
-    
 }
 
 - (void)didTapBackButton
@@ -503,17 +521,15 @@ didSelectTextCheckingResult:(NSTextCheckingResult *)result atPoint:(CGPoint)poin
 {
     NSInteger time;
     NSString *timeString;
-    
-//    NSLog(@"Start %@", created.description);
-    
+        
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     formatter.dateFormat = @"yyyy-MM-dd HH:mm:ss z";
     formatter.timeZone = [NSTimeZone systemTimeZone];
-    NSString *createdlocal = [formatter stringFromDate:created];
+//    NSString *createdlocal = [formatter stringFromDate:created];
 //    NSLog(@"Converted %@", createdlocal);
     
     NSDate *now = [NSDate date];
-    NSString *nowLocal = [formatter stringFromDate:now];
+//    NSString *nowLocal = [formatter stringFromDate:now];
 //    NSLog(@"Current %@", nowLocal);
     
     NSTimeInterval timeBetweenDates = [now timeIntervalSinceDate:created];

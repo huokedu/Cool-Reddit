@@ -10,7 +10,6 @@
 #import "JSONKit.h"
 
 @implementation RedditWrapper
-@synthesize delegate = _delegate;
 
 - (void)commentsJSONUsingPermalink:(NSString *)link
 {
@@ -34,27 +33,27 @@
 - (void)requestJSON:(NSURL *)url
 {
 
-    NSMutableURLRequest *_request = [NSMutableURLRequest requestWithURL:url];
-    NSDictionary *_headers = @{ @"accept": @"application/json" };
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    NSDictionary *headers = @{@"accept": @"application/json"};
     
-    [_request setAllHTTPHeaderFields:_headers];
+    [request setAllHTTPHeaderFields:headers];
 
-    [NSURLConnection sendAsynchronousRequest:_request
+    [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse* response, NSData* data, NSError* error) {
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                
-                               NSError *_errorJson = nil;
-                               NSMutableArray *_JSON = [data mutableObjectFromJSONDataWithParseOptions:JKParseOptionNone error:&_errorJson];
+                               NSError *errorJSON = nil;
+                               NSMutableArray *JSON = [data mutableObjectFromJSONDataWithParseOptions:JKParseOptionNone error:&errorJSON];
                                
-                               if (_errorJson != nil) {
-                                   NSLog(@"JSON Request Error %@", [_errorJson localizedDescription]);
+                               if (errorJSON != nil) {
+                                   NSLog(@"JSON Request Error %@", [errorJSON localizedDescription]);
                                    NSLog(@"Handled behind the scenes for now");
                                    [self.delegate returnedJSON:nil];
                                } else {
                                    //Do something with returned array
                                    dispatch_async(dispatch_get_main_queue(), ^{
                                        
-                                       [self.delegate returnedJSON:_JSON];
+                                       [self.delegate returnedJSON:JSON];
                                    });
                                }
                                

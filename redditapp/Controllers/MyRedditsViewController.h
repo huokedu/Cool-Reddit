@@ -18,9 +18,6 @@
 @end
 
 @interface MyRedditsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
-{
-    __weak id <MyRedditsViewControllerDelegate> delegate;
-}
 
 @property (nonatomic, weak) id <MyRedditsViewControllerDelegate> delegate;
 @property (nonatomic, strong) UITableView *tableView;

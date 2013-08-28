@@ -37,11 +37,12 @@
 
 @interface RedditViewController ()
 {
-    NSMutableArray *_posts;
+//    NSMutableArray *_posts;
     UIRefreshControl *_refreshControl;
     UITableViewController *_tvc;
 }
 @property (nonatomic, strong) Indicator *indicator;
+@property (nonatomic, strong) NSMutableArray *posts;
 @end
 
 @implementation RedditViewController
@@ -60,11 +61,6 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    NSDate *createdDate = [NSDate dateWithTimeIntervalSince1970:1368902001];
-
-    [self elapsedTime:createdDate];
-    
-    self.indicator = [[Indicator alloc] init];
     [self.view addSubview:self.indicator];
     
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
@@ -143,14 +139,32 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (Indicator *)indicator
+{
+    if (!_indicator) {
+        _indicator = [[Indicator alloc] init];
+    }
+    
+    return _indicator;
+}
+
+- (NSMutableArray *)posts
+{
+    if (!_posts) {
+        _posts = [[NSMutableArray alloc] init];
+    }
+    
+    return _posts;
+}
+
 #pragma mark - TableViewDelegate Methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {    
-    if (_posts.count == 0) {
+    if (self.posts.count == 0) {
         return 0;
     } else {
         // The extra row is for the "Load more" cell
-        return _posts.count + 1;
+        return self.posts.count + 1;
     }
 }
 
@@ -169,10 +183,10 @@
     UILabel *commentIcon = nil;
     UILabel *loadMoreLabel = nil;
     
-    if (indexPath.row == _posts.count) {
+    if (indexPath.row == self.posts.count) {
         
         cell = [tableView dequeueReusableCellWithIdentifier:LoadCellIdentifier];
-        if (cell == nil) {
+        if (!cell) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:LoadCellIdentifier];
             
             loadMoreLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -194,7 +208,7 @@
     } else {
         
         cell = [tableView dequeueReusableCellWithIdentifier:NormalCellIdentifier];
-        if (cell == nil) {
+        if (!cell) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:NormalCellIdentifier];
             [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
             
@@ -244,16 +258,17 @@
         }
         
         // Get Data
-        NSDictionary *dict = [[_posts objectAtIndex:[indexPath row]] objectForKey:@"data"];
-        NSString *count = [[dict objectForKey:@"num_comments"] description];
-        NSString *ups = [[dict objectForKey:@"ups"] description];
-        NSString *domain = [[dict objectForKey:@"domain"] description];
-        NSInteger createdUTC = [[dict objectForKey:@"created_utc"] integerValue];
+        NSDictionary *dict = self.posts[indexPath.row][@"data"];
+//        NSDictionary *dict = [[self.posts objectAtIndex:[indexPath row]] objectForKey:@"data"];
+        NSString *count = [dict[@"num_comments"] description];
+        NSString *ups = [dict[@"ups"] description];
+        NSString *domain = [dict[@"domain"] description];
+        NSInteger createdUTC = [dict[@"created_utc"] integerValue];
         NSString *time = [self elapsedTime:[NSDate dateWithTimeIntervalSince1970:createdUTC]];
         
         NSString *temp = [NSString stringWithFormat:@"%@ %@ %@", ups, domain, time];
         
-        NSString *title = [[dict objectForKey:@"title"] gtm_stringByUnescapingFromHTML];
+        NSString *title = [dict[@"title"] gtm_stringByUnescapingFromHTML];
         
         // Size Calculations
         CGSize authorSize = [temp sizeWithFont:[UIFont systemFontOfSize:kSmallFontSize]];
@@ -267,28 +282,28 @@
                                  lineBreakMode:NSLineBreakByWordWrapping];
 
         // Label Configs        
-        [commentIcon setText:@"\uf0e5"];
-        [commentIcon setFrame:CGRectMake(cellWidth - 10 - commentIconSize.width, kMargin, commentIconSize.width, commentIconSize.height)];
+        commentIcon.text = @"\uf0e5";
+        commentIcon.frame = CGRectMake(cellWidth - 10 - commentIconSize.width, kMargin, commentIconSize.width, commentIconSize.height);
                 
         title = [title gtm_stringByUnescapingFromHTML];
-        [titleLabel setText:title];
-        [titleLabel setFrame:CGRectMake(kMargin, kMargin, titleWidth, titleSize.height)];
+        titleLabel.text = title;
+        titleLabel.frame = CGRectMake(kMargin, kMargin, titleWidth, titleSize.height);
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapTitleLabel:)];
         [titleLabel addGestureRecognizer:tapGesture];
         
-        [tapLabel setFrame:CGRectMake(kMargin, 0, titleWidth, 10)];
+        tapLabel.frame = CGRectMake(kMargin, 0, titleWidth, 10);
         UITapGestureRecognizer *tapGesture2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapTitleLabel:)];
         [tapLabel addGestureRecognizer:tapGesture2];
         
-        [countLabel setText:count];
-        [countLabel setFrame:CGRectMake(kMargin + titleWidth + kHorizontalSpacer, kMargin + commentIconSize.height, countSize.width, countSize.height)];
+        countLabel.text = count;
+        countLabel.frame = CGRectMake(kMargin + titleWidth + kHorizontalSpacer, kMargin + commentIconSize.height, countSize.width, countSize.height);
                 
-        [infoLabel setText:[NSString stringWithFormat:@"%@ %@ %@", ups, domain, time]];
+        infoLabel.text = [NSString stringWithFormat:@"%@ %@ %@", ups, domain, time];
         UIColor *upsColor = [UIColor colorWithRed:77.0f/255.0f green:139.0f/255.0f blue:77.0f/255.0f alpha:1];
         
         [infoLabel setTextColor:upsColor range:[infoLabel.text rangeOfString:[NSString stringWithFormat:@"%@", ups]]];
         
-        [infoLabel setFrame:CGRectMake(kMargin, kMargin + titleSize.height + kVerticalSpacer, authorSize.width, authorSize.height)];
+        infoLabel.frame = CGRectMake(kMargin, kMargin + titleSize.height + kVerticalSpacer, authorSize.width, authorSize.height);
     }
         
     return cell;
@@ -296,14 +311,14 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == _posts.count) {
-        NSString *postName = [[[_posts lastObject] objectForKey:@"data"] objectForKey:@"name"];
+    if (indexPath.row == self.posts.count) {
+        NSString *postName = [self.posts lastObject][@"data"][@"name"];
         RedditWrapper *model = [[RedditWrapper alloc] init];
         [model redditJSON:[[Share sharedInstance] redditName] withPostName:postName withLimit:25];
-        [model setDelegate:self];
+        model.delegate = self;
     } else {
-        NSDictionary *dict = [_posts objectAtIndex:indexPath.row];
-        dict = [dict objectForKey:@"data"];
+        NSDictionary *dict = self.posts[indexPath.row];
+        dict = dict[@"data"];
         
         // Set Share Singleton properties to be used in the CommentViewController
         [[Share sharedInstance] setSelfText:[[dict objectForKey:@"selftext"] gtm_stringByUnescapingFromHTML]];
@@ -321,19 +336,19 @@
 {
     CGFloat cellWidth = self.view.bounds.size.width;
     
-    if (indexPath.row == _posts.count) {
+    if (indexPath.row == self.posts.count) {
         // Height for the "Load more" cell
         return 50;
     } else {
         // Get Data
-        NSDictionary *dict = [[_posts objectAtIndex:[indexPath row]] objectForKey:@"data"];
-        NSString *title = [[dict objectForKey:@"title"] description];
+        NSDictionary *dict = self.posts[indexPath.row][@"data"];
+        NSString *title = [dict[@"title"] description];
         title = [title gtm_stringByUnescapingFromHTML];
         
-        NSString *count = [[dict objectForKey:@"num_comments"] description];
-        NSString *ups = [[dict objectForKey:@"ups"] description];
-        NSString *domain = [[dict objectForKey:@"domain"] description];
-        NSInteger createdUTC = [[dict objectForKey:@"created_utc"] integerValue];
+        NSString *count = [dict[@"num_comments"] description];
+        NSString *ups = [dict[@"ups"] description];
+        NSString *domain = [dict[@"domain"] description];
+        NSInteger createdUTC = [dict[@"created_utc"] integerValue];
         NSString *elapsedTime = [self elapsedTime:[NSDate dateWithTimeIntervalSince1970:createdUTC]];
         
         NSString *temp = [NSString stringWithFormat:@"%@ %@ %@", ups, domain, elapsedTime];
@@ -372,16 +387,16 @@
     [_tvc.refreshControl endRefreshing];
     
     if (JSON) {
-        if (_posts.count > 0) {
+        if (self.posts.count > 0) {
 //            NSLog(@"Load more tapped");
-            [_posts addObjectsFromArray:[[JSON objectForKey:@"data"] objectForKey:@"children"]];
+            [self.posts addObjectsFromArray:JSON[@"data"][@"children"]];
         }
-        if (_posts.count == 0) {
-            _posts = [[JSON objectForKey:@"data"] objectForKey:@"children"];
+        if (self.posts.count == 0) {
+            self.posts = JSON[@"data"][@"children"];
         }
-    }
         
-    [self.tableView reloadData];
+        [self.tableView reloadData];
+    }
 }
 
 #pragma mark -
@@ -398,7 +413,7 @@
 - (void)selectedReddit:(NSString *)name
 {    
     // Clear out the posts array
-    _posts = nil;
+    self.posts = nil;
         
     RedditWrapper *model = [[RedditWrapper alloc] init];
     [model redditJSONUsingName:name];
@@ -427,9 +442,9 @@
 
 - (void)showLinkWithRow:(NSInteger)row
 {
-    NSDictionary *post = [[_posts objectAtIndex:row] objectForKey:@"data"];
+    NSDictionary *post = self.posts[row][@"data"];
     
-    NSString *url = [post objectForKey:@"url"];
+    NSString *url = post[@"url"];
     
     WebViewController *webController = [[WebViewController alloc] init];
     [[Share sharedInstance] setLink:[NSURL URLWithString:url]];
@@ -508,7 +523,7 @@
 #pragma mark -
 - (void)refreshTableView
 {    
-    _posts = nil;
+    self.posts = nil;
 
     [_tvc.refreshControl beginRefreshing];
     RedditWrapper *wrapper = [[RedditWrapper alloc] init];
@@ -526,12 +541,12 @@
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     formatter.dateFormat = @"yyyy-MM-dd HH:mm:ss z";
     formatter.timeZone = [NSTimeZone systemTimeZone];
-    NSString *createdlocal = [formatter stringFromDate:created];
-    //    NSLog(@"Converted %@", createdlocal);
+//    NSString *createdlocal = [formatter stringFromDate:created];
+//    NSLog(@"Converted %@", createdlocal);
     
     NSDate *now = [NSDate date];
-    NSString *nowLocal = [formatter stringFromDate:now];
-    //    NSLog(@"Current %@", nowLocal);
+//    NSString *nowLocal = [formatter stringFromDate:now];
+//    NSLog(@"Current %@", nowLocal);
     
     NSTimeInterval timeBetweenDates = [now timeIntervalSinceDate:created];
     

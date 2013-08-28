@@ -26,12 +26,6 @@
 @end
 
 @implementation MyRedditsViewController
-@synthesize tableView = _tableView;
-@synthesize delegate = _delegate;
-@synthesize managedObjectContext = _managedObjectContext;
-@synthesize redditsArray = _redditsArray;
-@synthesize fetchedObjects = _fetchedObjects;
-@synthesize badWords= _badWords;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -49,10 +43,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
     
     [self fetchRedditsFromDb];
-    
     [self setupView];
 }
 
@@ -171,7 +163,6 @@
             NSLog(@"setDefaultReddits Error %@", [error localizedDescription]);
         }
 
-        
         orderingValue += 1;
     }
 }
@@ -301,7 +292,7 @@
     NSString *trimmedString = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     
     NSCharacterSet *alphabet = [NSCharacterSet letterCharacterSet];
-    BOOL valid = [[trimmedString stringByTrimmingCharactersInSet:alphabet] isEqualToString:@""];
+    BOOL isValid = [[trimmedString stringByTrimmingCharactersInSet:alphabet] isEqualToString:@""];
     
     // Screen out some bad words
     // Remove [c] for case sensitivity
@@ -315,7 +306,7 @@
         return YES;
     }
     
-    if (((trimmedString.length > 0) & valid) | ([trimmedString compare:@"Front Page"
+    if (((trimmedString.length > 0) && isValid) || ([trimmedString compare:@"Front Page"
                                                                      options:NSCaseInsensitiveSearch] == NSOrderedSame)) {
         [self fetchRedditsFromDb];
         
@@ -362,7 +353,7 @@
     
     static NSString *CellIdentifier = @"Cell";
     cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
+    if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         cell.selectionStyle = UITableViewCellAccessoryNone;
         
